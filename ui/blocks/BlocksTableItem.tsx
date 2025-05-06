@@ -20,7 +20,6 @@ import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import IconSvg from 'ui/shared/IconSvg';
 import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
-import Utilization from 'ui/shared/Utilization/Utilization';
 
 import { getBaseFeeValue } from './utils';
 
@@ -36,7 +35,6 @@ const isRollup = config.features.rollup.isEnabled;
 
 const BlocksTableItem = ({ data, isLoading, enableTimeIncrement, animation, chainData }: Props) => {
   const totalReward = getBlockTotalReward(data);
-  const burntFees = BigNumber(data.burnt_fees || 0);
   const txFees = BigNumber(data.transaction_fees || 0);
   const baseFeeValue = getBaseFeeValue(data.base_fee_per_gas || null);
 
@@ -123,14 +121,10 @@ const BlocksTableItem = ({ data, isLoading, enableTimeIncrement, animation, chai
       { !isRollup && !config.UI.views.block.hiddenFields?.burnt_fees && (
         <TableCell >
           <Flex alignItems="center" columnGap={ 2 }>
-            <IconSvg name="flame" boxSize={ 5 } color={{ _light: 'gray.500', _dark: 'inherit' }} isLoading={ isLoading }/>
             <Skeleton loading={ isLoading } display="inline-block">
-              { burntFees.dividedBy(WEI).toFixed(8) }
+              { txFees.dividedBy(WEI).toFixed(8) }
             </Skeleton>
           </Flex>
-          <Tooltip content="Burnt fees / Txn fees * 100%" disabled={ isLoading }>
-            <Utilization mt={ 2 } w="min-content" value={ burntFees.div(txFees).toNumber() } isLoading={ isLoading }/>
-          </Tooltip>
         </TableCell>
       ) }
       { !isRollup && !config.UI.views.block.hiddenFields?.base_fee && Boolean(baseFeeValue) && (

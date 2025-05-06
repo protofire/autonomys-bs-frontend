@@ -31,11 +31,9 @@ import BatchEntityL2 from 'ui/shared/entities/block/BatchEntityL2';
 import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import HashStringShortenDynamic from 'ui/shared/HashStringShortenDynamic';
-import IconSvg from 'ui/shared/IconSvg';
 import PrevNext from 'ui/shared/PrevNext';
 import RawDataSnippet from 'ui/shared/RawDataSnippet';
 import StatusTag from 'ui/shared/statusTag/StatusTag';
-import Utilization from 'ui/shared/Utilization/Utilization';
 import VerificationSteps from 'ui/shared/verificationSteps/VerificationSteps';
 import ZkSyncL2TxnBatchHashesInfo from 'ui/txnBatches/zkSyncL2/ZkSyncL2TxnBatchHashesInfo';
 
@@ -94,14 +92,6 @@ const BlockDetails = ({ query }: Props) => {
             { space }+{ space }
             <Tooltip content="Txn fees">
               <span>{ txFees.dividedBy(WEI).toFixed() }</span>
-            </Tooltip>
-          </>
-        ) }
-        { !burntFees.isEqualTo(ZERO) && (
-          <>
-            { space }-{ space }
-            <Tooltip content="Burnt fees">
-              <span>{ burntFees.dividedBy(WEI).toFixed() }</span>
             </Tooltip>
           </>
         ) }
@@ -371,7 +361,7 @@ const BlockDetails = ({ query }: Props) => {
         <>
           <DetailedInfo.ItemLabel
             hint={
-              `For each block, the ${ validatorTitle } is rewarded with a finite amount of ${ config.chain.currency.symbol || 'native token' } 
+              `For each block, the ${ validatorTitle } is rewarded with a finite amount of ${ config.chain.currency.symbol || 'native token' }
           on top of the fees paid for all transactions in the block`
             }
             isLoading={ isPlaceholderData }
@@ -497,27 +487,17 @@ const BlockDetails = ({ query }: Props) => {
         <>
           <DetailedInfo.ItemLabel
             hint={
-              `Amount of ${ config.chain.currency.symbol || 'native token' } burned from transactions included in the block. 
+              `Amount of ${ config.chain.currency.symbol || 'native token' } burned from transactions included in the block.
               Equals Block Base Fee per Gas * Gas Used`
             }
             isLoading={ isPlaceholderData }
           >
-            Burnt fees
+            Txn fees
           </DetailedInfo.ItemLabel>
           <DetailedInfo.ItemValue>
-            <IconSvg name="flame" boxSize={ 5 } color="gray.500" isLoading={ isPlaceholderData }/>
             <Skeleton loading={ isPlaceholderData } ml={ 2 }>
-              { burntFees.dividedBy(WEI).toFixed() } { currencyUnits.ether }
+              { txFees.dividedBy(WEI).toFixed() } { currencyUnits.ether }
             </Skeleton>
-            { !txFees.isEqualTo(ZERO) && (
-              <Tooltip content="Burnt fees / Txn fees * 100%">
-                <Utilization
-                  ml={ 4 }
-                  value={ burntFees.dividedBy(txFees).toNumber() }
-                  isLoading={ isPlaceholderData }
-                />
-              </Tooltip>
-            ) }
           </DetailedInfo.ItemValue>
         </>
       ) }

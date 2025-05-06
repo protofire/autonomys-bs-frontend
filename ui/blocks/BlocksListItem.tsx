@@ -21,7 +21,6 @@ import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import IconSvg from 'ui/shared/IconSvg';
 import ListItemMobile from 'ui/shared/ListItemMobile/ListItemMobile';
 import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
-import Utilization from 'ui/shared/Utilization/Utilization';
 
 import { getBaseFeeValue } from './utils';
 
@@ -36,7 +35,6 @@ const isRollup = config.features.rollup.isEnabled;
 
 const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation }: Props) => {
   const totalReward = getBlockTotalReward(data);
-  const burntFees = BigNumber(data.burnt_fees || 0);
   const txFees = BigNumber(data.transaction_fees || 0);
   const baseFeeValue = getBaseFeeValue(data.base_fee_per_gas);
 
@@ -118,15 +116,13 @@ const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation }: Pro
       ) }
       { !isRollup && !config.UI.views.block.hiddenFields?.burnt_fees && (
         <Box>
-          <Text fontWeight={ 500 }>Burnt fees</Text>
+          <Text fontWeight={ 500 }>Txn fees</Text>
           <Flex columnGap={ 4 } mt={ 2 }>
             <Flex>
-              <IconSvg name="flame" boxSize={ 5 } color="gray.500" isLoading={ isLoading }/>
               <Skeleton loading={ isLoading } display="inline-block" color="text.secondary" ml={ 2 }>
-                <span>{ burntFees.div(WEI).toFixed() }</span>
+                <span>{ txFees.div(WEI).toFixed() }</span>
               </Skeleton>
             </Flex>
-            <Utilization ml={ 4 } value={ burntFees.div(txFees).toNumber() } isLoading={ isLoading }/>
           </Flex>
         </Box>
       ) }

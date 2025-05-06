@@ -12,6 +12,7 @@ import { Tooltip } from 'toolkit/chakra/tooltip';
 import { useDisclosure } from 'toolkit/hooks/useDisclosure';
 import IconSvg from 'ui/shared/IconSvg';
 import AuthGuard from 'ui/snippets/auth/AuthGuard';
+import useProfileQuery from 'ui/snippets/auth/useProfileQuery';
 import WatchlistAddModal from 'ui/watchlist/AddressModal/AddressModal';
 import DeleteAddressModal from 'ui/watchlist/DeleteAddressModal';
 
@@ -27,6 +28,7 @@ const AddressFavoriteButton = ({ className, hash, watchListId }: Props) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const onFocusCapture = usePreventFocusAfterModalClosing();
+  const profileQuery = useProfileQuery();
 
   const handleAddToFavorite = React.useCallback(() => {
     watchListId ? deleteModalProps.onOpen() : addModalProps.onOpen();
@@ -58,7 +60,7 @@ const AddressFavoriteButton = ({ className, hash, watchListId }: Props) => {
     <>
       <AuthGuard onAuthSuccess={ handleAddToFavorite }>
         { ({ onClick }) => (
-          <Tooltip content={ `${ watchListId ? 'Remove address from Watch list' : 'Add address to Watch list' }` }>
+          <Tooltip content={ `${ watchListId ? 'Remove address from Watch list' : 'Add address to Watch list' }` } disableOnMobile>
             <IconButton
               className={ className }
               aria-label="edit"
@@ -78,6 +80,8 @@ const AddressFavoriteButton = ({ className, hash, watchListId }: Props) => {
         isAdd
         onSuccess={ handleAddOrDeleteSuccess }
         data={ formData }
+        hasEmail={ Boolean(profileQuery.data?.email) }
+        showEmailAlert
       />
       { formData.id && (
         <DeleteAddressModal

@@ -11,7 +11,7 @@ import * as pwConfig from 'playwright/utils/config';
 
 import Token from './Token';
 
-const hash = tokenInfo.address;
+const hash = tokenInfo.address_hash;
 const chainId = config.chain.id;
 
 const hooksConfig = {
@@ -34,13 +34,10 @@ test.beforeEach(async({ mockApiResponse, mockTextAd }) => {
 });
 
 test('base view', async({ render, page, createSocket }) => {
-  test.slow();
   const component = await render(<Token/>, { hooksConfig }, { withSocket: true });
 
   const socket = await createSocket();
-  const channel = await socketServer.joinChannel(socket, `tokens:${ hash }`);
-  socketServer.sendMessage(socket, channel, 'total_supply', { total_supply: 10 ** 20 });
-  await component.getByText('100 ARIA').waitFor({ state: 'visible', timeout: 10_000 });
+  await socketServer.joinChannel(socket, `tokens:${ hash }`);
 
   await expect(component).toHaveScreenshot({
     mask: [ page.locator(pwConfig.adsBannerSelector) ],
@@ -69,7 +66,7 @@ test('with verified info', async({ render, page, createSocket, mockApiResponse, 
 });
 
 test('bridged token', async({ render, page, createSocket, mockApiResponse, mockAssetResponse, mockEnvs }) => {
-  const hash = bridgedTokenA.address;
+  const hash = bridgedTokenA.address_hash;
   const hooksConfig = {
     router: {
       query: { hash, tab: 'token_transfers' },

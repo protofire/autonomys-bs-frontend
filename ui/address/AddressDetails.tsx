@@ -13,7 +13,6 @@ import isCustomAppError from 'ui/shared/AppError/isCustomAppError';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
-import DetailedInfoSponsoredItem from 'ui/shared/DetailedInfo/DetailedInfoSponsoredItem';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
@@ -301,8 +300,6 @@ const AddressDetails = ({ addressQuery }: Props) => {
             </DetailedInfo.ItemValue>
           </>
         ) }
-
-        <DetailedInfoSponsoredItem isLoading={ addressQuery.isPlaceholderData }/>
       </DetailedInfo.Container>
     </>
   );

@@ -13,7 +13,6 @@ import RewardsDashboardCardValue from 'ui/rewards/dashboard/RewardsDashboardCard
 import ActivityTab from 'ui/rewards/dashboard/tabs/ActivityTab';
 import ReferralsTab from 'ui/rewards/dashboard/tabs/ReferralsTab';
 import ResourcesTab from 'ui/rewards/dashboard/tabs/ResourcesTab';
-import AdBanner from 'ui/shared/ad/AdBanner';
 import PageTitle from 'ui/shared/Page/PageTitle';
 import useRedirectForInvalidAuthToken from 'ui/snippets/auth/useRedirectForInvalidAuthToken';
 
@@ -59,7 +58,6 @@ const RewardsDashboard = () => {
             </span>
           ) }
         />
-        <AdBanner platform="mobile" w="fit-content" flexShrink={ 0 } borderRadius="md" overflow="hidden" display={{ base: 'none', lg: 'block ' }}/>
       </Flex>
       <Flex flexDirection="column" alignItems="flex-start" w="full" gap={ 6 }>
         { isError && <Alert status="error">Failed to load some data. Please try again later.</Alert> }

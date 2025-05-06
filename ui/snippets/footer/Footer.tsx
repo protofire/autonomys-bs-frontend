@@ -9,11 +9,9 @@ import config from 'configs/app';
 import type { ResourceError } from 'lib/api/resources';
 import useApiQuery from 'lib/api/useApiQuery';
 import useFetch from 'lib/hooks/useFetch';
-import useIssueUrl from 'lib/hooks/useIssueUrl';
 import { Link } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import { copy } from 'toolkit/utils/htmlEntities';
-import IconSvg from 'ui/shared/IconSvg';
 import { CONTENT_MAX_WIDTH } from 'ui/shared/layout/utils';
 import NetworkAddToWallet from 'ui/shared/NetworkAddToWallet';
 
@@ -34,38 +32,31 @@ const Footer = () => {
     },
   });
   const apiVersionUrl = getApiVersionUrl(backendVersionData?.backend_version);
-  const issueUrl = useIssueUrl(backendVersionData?.backend_version);
 
   const BLOCKSCOUT_LINKS = [
     {
       icon: 'edit' as const,
       iconSize: '16px',
       text: 'Submit an issue',
-      url: issueUrl,
+      url: 'https://github.com/autonomys/blockscout-frontend/issues',
     },
     {
       icon: 'social/git' as const,
       iconSize: '18px',
       text: 'Contribute',
-      url: 'https://github.com/blockscout/blockscout',
+      url: 'https://github.com/autonomys',
     },
     {
       icon: 'social/twitter' as const,
       iconSize: '18px',
       text: 'X (ex-Twitter)',
-      url: 'https://x.com/blockscout',
+      url: 'https://twitter.com/AutonomysNet',
     },
     {
       icon: 'social/discord' as const,
       iconSize: '24px',
       text: 'Discord',
-      url: 'https://discord.gg/blockscout',
-    },
-    {
-      icon: 'brands/blockscout' as const,
-      iconSize: '18px',
-      text: 'All chains',
-      url: 'https://www.blockscout.com/chains-and-projects',
+      url: 'https://autonomys.xyz/discord',
     },
     {
       icon: 'donate' as const,
@@ -116,23 +107,9 @@ const Footer = () => {
   }, []);
 
   const renderProjectInfo = React.useCallback((gridArea?: GridProps['gridArea']) => {
-    const logoColor = { base: 'blue.600', _dark: 'white' };
 
     return (
       <Box gridArea={ gridArea }>
-        <Flex columnGap={ 2 } textStyle="xs" alignItems="center">
-          <span>Made with</span>
-          <Link href="https://www.blockscout.com" target="_blank" display="inline-flex" color={ logoColor } _hover={{ color: logoColor }}>
-            <IconSvg
-              name="networks/logo-placeholder"
-              width="80px"
-              height={ 4 }
-            />
-          </Link>
-        </Flex>
-        <Text mt={ 3 } fontSize="xs">
-          Blockscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Ethereum Networks.
-        </Text>
         <Box mt={ 6 } alignItems="start" textStyle="xs">
           { apiVersionUrl && (
             <Text>

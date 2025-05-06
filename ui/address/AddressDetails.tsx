@@ -13,7 +13,6 @@ import isCustomAppError from 'ui/shared/AppError/isCustomAppError';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
-import DetailedInfoSponsoredItem from 'ui/shared/DetailedInfo/DetailedInfoSponsoredItem';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
@@ -301,25 +300,6 @@ const AddressDetails = ({ addressQuery, countersQuery, isLoading }: Props) => {
               <BlockEntity
                 number={ data.block_number_balance_updated_at }
                 isLoading={ isLoading }
-              />
-            </DetailedInfo.ItemValue>
-          </>
-        ) }
-
-        <DetailedInfoSponsoredItem isLoading={ isLoading }/>
-
-        { (address3rdPartyWidgets.isEnabled && address3rdPartyWidgets.items.length > 0) && (
-          <>
-            <DetailedInfo.ItemLabel
-              hint="Metrics provided by third party partners"
-              isLoading={ address3rdPartyWidgets.configQuery.isPlaceholderData || addressQuery.isPlaceholderData }
-            >
-              Widgets
-            </DetailedInfo.ItemLabel>
-            <DetailedInfo.ItemValue>
-              <Address3rdPartyWidgets
-                addressType={ addressType }
-                isLoading={ addressQuery.isPlaceholderData }
               />
             </DetailedInfo.ItemValue>
           </>

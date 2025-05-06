@@ -4,7 +4,6 @@ import type { Pool } from 'types/api/pools';
 
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
-import DetailedInfoSponsoredItem from 'ui/shared/DetailedInfo/DetailedInfoSponsoredItem';
 import TokenEntity from 'ui/shared/entities/token/TokenEntity';
 
 type Props = {
@@ -136,8 +135,6 @@ const PoolInfo = ({ data, isPlaceholderData }: Props) => {
           { data.dex.name }
         </Skeleton>
       </DetailedInfo.ItemValue>
-
-      <DetailedInfoSponsoredItem isLoading={ isPlaceholderData }/>
     </DetailedInfo.Container>
   );
 };

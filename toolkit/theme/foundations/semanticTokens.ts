@@ -220,7 +220,7 @@ const semanticTokens: ThemingConfig['semanticTokens'] = {
       bg: {
         info: { value: { _light: '{colors.blackAlpha.50}', _dark: '{colors.whiteAlpha.100}' } },
         warning: { value: { _light: '{colors.orange.100}', _dark: '{colors.orange.800/60}' } },
-        warning_table: { value: { _light: '{colors.orange.50}', _dark: '{colors.orange.800/60}' } },
+        warning_table: { value: { _light: '{colors.orange.50}', _dark: '{colors.orange.200/20}' } },
         success: { value: { _light: '{colors.green.100}', _dark: '{colors.green.900}' } },
         error: { value: { _light: '{colors.red.100}', _dark: '{colors.red.900}' } },
       },

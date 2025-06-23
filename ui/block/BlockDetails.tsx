@@ -10,7 +10,7 @@ import { route } from 'nextjs-routes';
 
 import config from 'configs/app';
 import getBlockReward from 'lib/block/getBlockReward';
-import getNetworkValidationActionText from 'lib/networks/getNetworkValidationActionText';
+// import getNetworkValidationActionText from 'lib/networks/getNetworkValidationActionText';
 import getNetworkValidatorTitle from 'lib/networks/getNetworkValidatorTitle';
 import * as arbitrum from 'lib/rollups/arbitrum';
 import getQueryParamString from 'lib/router/getQueryParamString';
@@ -26,7 +26,7 @@ import BlockGasUsed from 'ui/shared/block/BlockGasUsed';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
 import DetailedInfoTimestamp from 'ui/shared/DetailedInfo/DetailedInfoTimestamp';
-import AddressEntity from 'ui/shared/entities/address/AddressEntity';
+// import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BatchEntityL2 from 'ui/shared/entities/block/BatchEntityL2';
 import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
@@ -99,7 +99,7 @@ const BlockDetails = ({ query }: Props) => {
     );
   })();
 
-  const verificationTitle = `${ capitalize(getNetworkValidationActionText()) } by`;
+  // const verificationTitle = `${ capitalize(getNetworkValidationActionText()) } by`;
 
   const txsNum = (() => {
     const blockTxsNum = (
@@ -304,7 +304,7 @@ const BlockDetails = ({ query }: Props) => {
         </>
       ) }
 
-      { !config.UI.views.block.hiddenFields?.miner && (
+      { /* { !config.UI.views.block.hiddenFields?.miner && (
         <>
           <DetailedInfo.ItemLabel
             hint="A block producer who successfully included the block onto the blockchain"
@@ -319,7 +319,7 @@ const BlockDetails = ({ query }: Props) => {
             />
           </DetailedInfo.ItemValue>
         </>
-      ) }
+      ) } */ }
 
       { rollupFeature.isEnabled && rollupFeature.type === 'arbitrum' &&
         (data.arbitrum?.commitment_transaction.hash || data.arbitrum?.confirmation_transaction.hash) &&
@@ -483,7 +483,7 @@ const BlockDetails = ({ query }: Props) => {
         </>
       ) }
 
-      { !config.UI.views.block.hiddenFields?.burnt_fees && !burntFees.isEqualTo(ZERO) && (
+      { !config.UI.views.block.hiddenFields?.burnt_fees && (
         <>
           <DetailedInfo.ItemLabel
             hint={
@@ -601,16 +601,16 @@ const BlockDetails = ({ query }: Props) => {
           </>
         ) }
 
-        <DetailedInfo.ItemLabel
+        { /* <DetailedInfo.ItemLabel
           hint={ `Block difficulty for ${ validatorTitle }, used to calibrate block generation time` }
         >
           Difficulty
         </DetailedInfo.ItemLabel>
         <DetailedInfo.ItemValue overflow="hidden">
           <HashStringShortenDynamic hash={ BigNumber(data.difficulty).toFormat() }/>
-        </DetailedInfo.ItemValue>
+        </DetailedInfo.ItemValue> */ }
 
-        { data.total_difficulty && (
+        { /* { data.total_difficulty && (
           <>
             <DetailedInfo.ItemLabel
               hint="Total difficulty of the chain until this block"
@@ -621,7 +621,7 @@ const BlockDetails = ({ query }: Props) => {
               <HashStringShortenDynamic hash={ BigNumber(data.total_difficulty).toFormat() }/>
             </DetailedInfo.ItemValue>
           </>
-        ) }
+        ) } */ }
 
         <DetailedInfo.ItemDivider/>
 

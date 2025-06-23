@@ -495,7 +495,7 @@ const BlockDetails = ({ query }: Props) => {
             Txn fees
           </DetailedInfo.ItemLabel>
           <DetailedInfo.ItemValue>
-            <Skeleton loading={ isPlaceholderData } ml={ 2 }>
+            <Skeleton loading={ isPlaceholderData } >
               { txFees.dividedBy(WEI).toFixed() } { currencyUnits.ether }
             </Skeleton>
           </DetailedInfo.ItemValue>

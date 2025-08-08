@@ -46,20 +46,24 @@ const ValidatorDetails = ({ data, isLoading }: Props) => {
         </Skeleton>
       </DetailedInfo.ItemValue>
 
-      <DetailedInfo.ItemLabel
-        hint="libp2p peer ID, corresponding to the staker's BLS public key"
-        isLoading={ isLoading }
-      >
-        Peer ID
-      </DetailedInfo.ItemLabel>
-      <DetailedInfo.ItemValue>
-        <Flex alignItems="center" w="100%" minWidth={ 0 }>
-          <Skeleton loading={ isLoading } maxW="calc(100% - 28px)" overflow="hidden">
-            <HashStringShortenDynamic hash={ data.peer_id }/>
-          </Skeleton>
-          <CopyToClipboard text={ data.peer_id } isLoading={ isLoading }/>
-        </Flex>
-      </DetailedInfo.ItemValue>
+      { data.peer_id && (
+        <>
+          <DetailedInfo.ItemLabel
+            hint="libp2p peer ID, corresponding to the staker's BLS public key"
+            isLoading={ isLoading }
+          >
+            Peer ID
+          </DetailedInfo.ItemLabel>
+          <DetailedInfo.ItemValue>
+            <Flex alignItems="center" w="100%" minWidth={ 0 }>
+              <Skeleton loading={ isLoading } maxW="calc(100% - 28px)" overflow="hidden">
+                <HashStringShortenDynamic hash={ data.peer_id }/>
+              </Skeleton>
+              <CopyToClipboard text={ data.peer_id } isLoading={ isLoading }/>
+            </Flex>
+          </DetailedInfo.ItemValue>
+        </>
+      )}
 
       <DetailedInfo.ItemLabel
         hint="The address used for authenticating requests from this staker to the deposit contract"

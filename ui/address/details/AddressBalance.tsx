@@ -4,20 +4,19 @@ import React from 'react';
 import type { SocketMessage } from 'lib/socket/types';
 import type { Address } from 'types/api/address';
 
-import config from 'configs/app';
 import { getResourceKey } from 'lib/api/useApiQuery';
 import useSocketChannel from 'lib/socket/useSocketChannel';
 import useSocketMessage from 'lib/socket/useSocketMessage';
 import { currencyUnits } from 'lib/units';
 import { publicClient } from 'lib/web3/client';
 import { SECOND } from 'toolkit/utils/consts';
-import CurrencyValue from 'ui/shared/CurrencyValue';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
 import NativeTokenIcon from 'ui/shared/NativeTokenIcon';
+import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 
 interface Props {
   data: Pick<Address, 'block_number_balance_updated_at' | 'coin_balance' | 'hash' | 'exchange_rate'>;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 const AddressBalance = ({ data, isLoading }: Props) => {
@@ -47,7 +46,7 @@ const AddressBalance = ({ data, isLoading }: Props) => {
     }
 
     setLastBlockNumber(blockNumber);
-    const queryKey = getResourceKey('address', { pathParams: { hash: data.hash } });
+    const queryKey = getResourceKey('general:address', { pathParams: { hash: data.hash } });
     queryClient.setQueryData(queryKey, (prevData: Address | undefined) => {
       if (!prevData) {
         return;
@@ -96,17 +95,12 @@ const AddressBalance = ({ data, isLoading }: Props) => {
       >
         Balance
       </DetailedInfo.ItemLabel>
-      <DetailedInfo.ItemValue alignSelf="flex-start" flexWrap="nowrap">
-        <NativeTokenIcon boxSize={ 6 } mr={ 2 } isLoading={ isBalanceLoading }/>
-        <CurrencyValue
-          value={ displayBalance }
+      <DetailedInfo.ItemValue multiRow>
+        <NativeCoinValue
+          amount={ data.coin_balance || '0' }
           exchangeRate={ data.exchange_rate }
-          decimals={ String(config.chain.currency.decimals) }
-          currency={ currencyUnits.ether }
-          accuracyUsd={ 2 }
-          accuracy={ 8 }
-          flexWrap="wrap"
-          isLoading={ isBalanceLoading }
+          startElement={ <NativeTokenIcon boxSize={ 5 } isLoading={ isBalanceLoading } mr={ 2 }/> }
+          loading={ isBalanceLoading }
         />
       </DetailedInfo.ItemValue>
     </>

@@ -4,8 +4,9 @@ import { Box, Flex, Heading } from '@chakra-ui/react';
 import React from 'react';
 
 import config from 'configs/app';
+import useIsMobile from 'lib/hooks/useIsMobile';
 import RewardsButton from 'ui/rewards/RewardsButton';
-import SearchBar from 'ui/snippets/searchBar/SearchBar';
+import SearchBar from 'ui/snippets/searchBar/SearchBarDesktop';
 import UserProfileDesktop from 'ui/snippets/user/profile/UserProfileDesktop';
 import UserWalletDesktop from 'ui/snippets/user/wallet/UserWalletDesktop';
 
@@ -15,15 +16,16 @@ const TEXT_COLOR_DEFAULT = 'white';
 const BORDER_DEFAULT = 'none';
 
 const HeroBanner = () => {
+
+  const isMobile = useIsMobile();
+
   const background = {
     _light:
       config.UI.homepage.heroBanner?.background?.[0] ||
-      config.UI.homepage.plate.background ||
       BACKGROUND_DEFAULT,
     _dark:
       config.UI.homepage.heroBanner?.background?.[1] ||
       config.UI.homepage.heroBanner?.background?.[0] ||
-      config.UI.homepage.plate.background ||
       BACKGROUND_DEFAULT,
   };
 
@@ -31,13 +33,11 @@ const HeroBanner = () => {
     _light:
       // light mode
       config.UI.homepage.heroBanner?.text_color?.[0] ||
-      config.UI.homepage.plate.textColor ||
       TEXT_COLOR_DEFAULT,
     // dark mode
     _dark:
       config.UI.homepage.heroBanner?.text_color?.[1] ||
       config.UI.homepage.heroBanner?.text_color?.[0] ||
-      config.UI.homepage.plate.textColor ||
       TEXT_COLOR_DEFAULT,
   };
 
@@ -83,7 +83,12 @@ const HeroBanner = () => {
             </Box>
           ) }
         </Flex>
-        <SearchBar isHomepage/>
+        <Box display={{ base: 'flex', lg: 'none' }}>
+          <SearchBarMobile isHeroBanner/>
+        </Box>
+        <Box display={{ base: 'none', lg: 'flex' }}>
+          <SearchBar isHeroBanner/>
+        </Box>
       </Box>
     </Flex>
   );

@@ -14,13 +14,13 @@ import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import ArbitrumL2MessageStatus from 'ui/shared/statusTag/ArbitrumL2MessageStatus';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 
 import type { MessagesDirection } from './ArbitrumL2Messages';
 
 const rollupFeature = config.features.rollup;
 
- type Props = { item: ArbitrumL2MessagesItem; isLoading?: boolean; direction: MessagesDirection };
+type Props = { item: ArbitrumL2MessagesItem; isLoading?: boolean; direction: MessagesDirection };
 
 const ArbitrumL2MessagesTableItem = ({ item, direction, isLoading }: Props) => {
   if (!rollupFeature.isEnabled || rollupFeature.type !== 'arbitrum') {
@@ -74,7 +74,7 @@ const ArbitrumL2MessagesTableItem = ({ item, direction, isLoading }: Props) => {
         ) }
       </TableCell>
       <TableCell verticalAlign="middle" pr={ 12 }>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.origination_timestamp }
           isLoading={ isLoading }
           color="text.secondary"
@@ -92,6 +92,7 @@ const ArbitrumL2MessagesTableItem = ({ item, direction, isLoading }: Props) => {
             hash={ l1TxHash }
             truncation="constant_long"
             noIcon
+            noCopy
           />
         ) : (
           <chakra.span color="text.secondary">

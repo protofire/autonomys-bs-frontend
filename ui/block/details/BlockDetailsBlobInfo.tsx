@@ -4,10 +4,8 @@ import React from 'react';
 
 import type { Block } from 'types/api/block';
 
-import { currencyUnits } from 'lib/units';
-import { WEI, WEI_IN_GWEI } from 'toolkit/utils/consts';
-import { space } from 'toolkit/utils/htmlEntities';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
+import GasPriceValue from 'ui/shared/value/GasPriceValue';
 
 interface Props {
   data: Block;
@@ -34,11 +32,8 @@ const BlockDetailsBlobInfo = ({ data }: Props) => {
           >
             Blob gas price
           </DetailedInfo.ItemLabel>
-          <DetailedInfo.ItemValue>
-            <Text>{ BigNumber(data.blob_gas_price).dividedBy(WEI).toFixed() } { currencyUnits.ether } </Text>
-            <Text color="text.secondary" whiteSpace="pre">
-              { space }({ BigNumber(data.blob_gas_price).dividedBy(WEI_IN_GWEI).toFixed() } { currencyUnits.gwei })
-            </Text>
+          <DetailedInfo.ItemValue multiRow>
+            <GasPriceValue amount={ data.blob_gas_price }/>
           </DetailedInfo.ItemValue>
         </>
       ) }
@@ -62,10 +57,7 @@ const BlockDetailsBlobInfo = ({ data }: Props) => {
             Excess blob gas
           </DetailedInfo.ItemLabel>
           <DetailedInfo.ItemValue>
-            <Text>{ BigNumber(data.excess_blob_gas).dividedBy(WEI).toFixed() } { currencyUnits.ether } </Text>
-            <Text color="text.secondary" whiteSpace="pre">
-              { space }({ BigNumber(data.excess_blob_gas).dividedBy(WEI_IN_GWEI).toFixed() } { currencyUnits.gwei })
-            </Text>
+            <GasPriceValue amount={ data.excess_blob_gas }/>
           </DetailedInfo.ItemValue>
         </>
       ) }

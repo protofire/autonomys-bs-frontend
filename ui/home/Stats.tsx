@@ -2,26 +2,28 @@ import { Grid } from '@chakra-ui/react';
 import BigNumber from 'bignumber.js';
 import React from 'react';
 
-import type { HomeStatsWidgetId } from 'types/homepage';
-
 import config from 'configs/app';
 import useApiQuery from 'lib/api/useApiQuery';
 import { HOMEPAGE_STATS, HOMEPAGE_STATS_MICROSERVICE } from 'stubs/stats';
-import { WEI } from 'toolkit/utils/consts';
 import GasInfoTooltip from 'ui/shared/gas/GasInfoTooltip';
 import GasPrice from 'ui/shared/gas/GasPrice';
 import IconSvg from 'ui/shared/IconSvg';
-import type { Props as StatsWidgetProps } from 'ui/shared/stats/StatsWidget';
 import StatsWidget from 'ui/shared/stats/StatsWidget';
+import { WEI } from 'ui/shared/value/utils';
+
+import type { HomeStatsItem } from './utils';
+import { isHomeStatsItemEnabled, sortHomeStatsItems } from './utils';
 
 const rollupFeature = config.features.rollup;
+const isOptimisticRollup = rollupFeature.isEnabled && rollupFeature.type === 'optimistic';
+const isArbitrumRollup = rollupFeature.isEnabled && rollupFeature.type === 'arbitrum';
 const isStatsFeatureEnabled = config.features.stats.isEnabled;
 
 const Stats = () => {
   const [ hasGasTracker, setHasGasTracker ] = React.useState(config.features.gasTracker.isEnabled);
 
   // data from stats microservice is prioritized over data from stats api
-  const statsQuery = useApiQuery('stats_main', {
+  const statsQuery = useApiQuery('stats:pages_main', {
     queryOptions: {
       refetchOnMount: false,
       placeholderData: isStatsFeatureEnabled ? HOMEPAGE_STATS_MICROSERVICE : undefined,
@@ -29,7 +31,7 @@ const Stats = () => {
     },
   });
 
-  const apiQuery = useApiQuery('stats', {
+  const apiQuery = useApiQuery('general:stats', {
     queryOptions: {
       refetchOnMount: false,
       placeholderData: HOMEPAGE_STATS,
@@ -46,21 +48,21 @@ const Stats = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ isPlaceholderData ]);
 
-  const zkEvmLatestBatchQuery = useApiQuery('homepage_zkevm_latest_batch', {
+  const zkEvmLatestBatchQuery = useApiQuery('general:homepage_zkevm_latest_batch', {
     queryOptions: {
       placeholderData: 12345,
       enabled: rollupFeature.isEnabled && rollupFeature.type === 'zkEvm' && config.UI.homepage.stats.includes('latest_batch'),
     },
   });
 
-  const zkSyncLatestBatchQuery = useApiQuery('homepage_zksync_latest_batch', {
+  const zkSyncLatestBatchQuery = useApiQuery('general:homepage_zksync_latest_batch', {
     queryOptions: {
       placeholderData: 12345,
       enabled: rollupFeature.isEnabled && rollupFeature.type === 'zkSync' && config.UI.homepage.stats.includes('latest_batch'),
     },
   });
 
-  const arbitrumLatestBatchQuery = useApiQuery('homepage_arbitrum_latest_batch', {
+  const arbitrumLatestBatchQuery = useApiQuery('general:homepage_arbitrum_latest_batch', {
     queryOptions: {
       placeholderData: 12345,
       enabled: rollupFeature.isEnabled && rollupFeature.type === 'arbitrum' && config.UI.homepage.stats.includes('latest_batch'),
@@ -88,14 +90,10 @@ const Stats = () => {
 
   const isLoading = isPlaceholderData || latestBatchQuery?.isPlaceholderData;
 
-  interface Item extends StatsWidgetProps {
-    id: HomeStatsWidgetId;
-  }
-
   const apiData = apiQuery.data;
   const statsData = statsQuery.data;
 
-  const items: Array<Item> = (() => {
+  const items: Array<HomeStatsItem> = (() => {
     if (!statsData && !apiData) {
       return [];
     }
@@ -108,8 +106,8 @@ const Stats = () => {
           boxSize={ 5 }
           flexShrink={ 0 }
           cursor="pointer"
-          color="icon.info"
-          _hover={{ color: 'link.primary.hove' }}
+          color="icon.secondary"
+          _hover={{ color: 'hover' }}
         />
       </GasInfoTooltip>
     ) : null;
@@ -117,7 +115,7 @@ const Stats = () => {
     return [
       latestBatchQuery?.data !== undefined && {
         id: 'latest_batch' as const,
-        icon: 'txn_batches_slim' as const,
+        icon: 'txn_batches' as const,
         label: 'Latest batch',
         value: latestBatchQuery.data.toLocaleString(),
         href: { pathname: '/batches' as const },
@@ -125,7 +123,7 @@ const Stats = () => {
       },
       (statsData?.total_blocks?.value || apiData?.total_blocks) && {
         id: 'total_blocks' as const,
-        icon: 'block_slim' as const,
+        icon: 'block' as const,
         label: statsData?.total_blocks?.title || 'Total blocks',
         value: Number(statsData?.total_blocks?.value || apiData?.total_blocks).toLocaleString(),
         href: { pathname: '/blocks' as const },
@@ -144,23 +142,31 @@ const Stats = () => {
       },
       (statsData?.total_transactions?.value || apiData?.total_transactions) && {
         id: 'total_txs' as const,
-        icon: 'transactions_slim' as const,
+        icon: 'transactions' as const,
         label: statsData?.total_transactions?.title || 'Total transactions',
         value: Number(statsData?.total_transactions?.value || apiData?.total_transactions).toLocaleString(),
         href: { pathname: '/txs' as const },
         isLoading,
       },
-      statsData?.total_operational_transactions?.value && {
+      (isArbitrumRollup && statsData?.total_operational_transactions?.value) && {
         id: 'total_operational_txs' as const,
-        icon: 'transactions_slim' as const,
+        icon: 'transactions' as const,
         label: statsData?.total_operational_transactions?.title || 'Total operational transactions',
         value: Number(statsData?.total_operational_transactions?.value).toLocaleString(),
         href: { pathname: '/txs' as const },
         isLoading,
       },
+      (isOptimisticRollup && statsData?.op_stack_total_operational_transactions?.value) && {
+        id: 'total_operational_txs' as const,
+        icon: 'transactions' as const,
+        label: statsData?.op_stack_total_operational_transactions?.title || 'Total operational transactions',
+        value: Number(statsData?.op_stack_total_operational_transactions?.value).toLocaleString(),
+        href: { pathname: '/txs' as const },
+        isLoading,
+      },
       apiData?.last_output_root_size && {
         id: 'latest_l1_state_batch' as const,
-        icon: 'txn_batches_slim' as const,
+        icon: 'txn_batches' as const,
         label: 'Latest L1 state batch',
         value: apiData?.last_output_root_size,
         href: { pathname: '/batches' as const },
@@ -193,22 +199,13 @@ const Stats = () => {
         icon: 'hourglass' as const,
         label: 'Current epoch',
         value: `#${ apiData.celo.epoch_number }`,
+        href: { pathname: '/epochs/[number]' as const, query: { number: String(apiData.celo.epoch_number) } },
         isLoading,
       },
     ]
       .filter(Boolean)
-      .filter(({ id }) => config.UI.homepage.stats.includes(id))
-      .sort((a, b) => {
-        const indexA = config.UI.homepage.stats.indexOf(a.id);
-        const indexB = config.UI.homepage.stats.indexOf(b.id);
-        if (indexA > indexB) {
-          return 1;
-        }
-        if (indexA < indexB) {
-          return -1;
-        }
-        return 0;
-      });
+      .filter(isHomeStatsItemEnabled)
+      .sort(sortHomeStatsItems);
   })();
 
   if (items.length === 0) {

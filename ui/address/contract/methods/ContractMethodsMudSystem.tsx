@@ -6,11 +6,11 @@ import type { SmartContractMudSystemItem } from 'types/api/contract';
 
 import useApiQuery from 'lib/api/useApiQuery';
 import getQueryParamString from 'lib/router/getQueryParamString';
-import ConnectWalletAlert from 'ui/shared/ConnectWalletAlert';
 
 import type { Item } from '../ContractSourceAddressSelector';
 import ContractSourceAddressSelector from '../ContractSourceAddressSelector';
 import ContractAbi from './ContractAbi';
+import ContractMethodsAlerts from './ContractMethodsAlerts';
 import ContractMethodsContainer from './ContractMethodsContainer';
 import ContractMethodsFilters from './ContractMethodsFilters';
 import useMethodsFilters from './useMethodsFilters';
@@ -30,7 +30,7 @@ const ContractMethodsMudSystem = ({ items }: Props) => {
 
   const [ selectedItem, setSelectedItem ] = React.useState(items.find((item) => item.address_hash === sourceAddress) || items[0]);
 
-  const systemInfoQuery = useApiQuery('contract_mud_system_info', {
+  const systemInfoQuery = useApiQuery('general:mud_system_info', {
     pathParams: { hash: addressHash, system_address: selectedItem.address_hash },
     queryOptions: {
       enabled: Boolean(selectedItem?.address_hash),
@@ -47,7 +47,7 @@ const ContractMethodsMudSystem = ({ items }: Props) => {
 
   return (
     <Flex flexDir="column" rowGap={ 6 }>
-      <ConnectWalletAlert/>
+      <ContractMethodsAlerts isLoading={ systemInfoQuery.isPending }/>
       <div>
         <ContractSourceAddressSelector
           items={ items }

@@ -49,8 +49,8 @@ const ContractVerificationForm = ({ method: methodFromQuery, config, hash }: Pro
     defaultValues: getDefaultValues(methodFromQuery, config, hash, []),
   });
   const { handleSubmit, watch, formState, setError, reset, getFieldState, getValues, clearErrors } = formApi;
-  const submitPromiseResolver = React.useRef<(value: unknown) => void>();
-  const methodNameRef = React.useRef<string>();
+  const submitPromiseResolver = React.useRef<((value: unknown) => void)>(undefined);
+  const methodNameRef = React.useRef<string>(undefined);
 
   const apiFetch = useApiFetch();
   const { trackContract } = useRewardsActivity();
@@ -59,7 +59,7 @@ const ContractVerificationForm = ({ method: methodFromQuery, config, hash }: Pro
 
     if (!hash) {
       try {
-        const response = await apiFetch<'contract', SmartContract>('contract', {
+        const response = await apiFetch<'general:contract', SmartContract>('general:contract', {
           pathParams: { hash: data.address.toLowerCase() },
         });
 
@@ -78,7 +78,7 @@ const ContractVerificationForm = ({ method: methodFromQuery, config, hash }: Pro
 
     try {
       await trackContract(data.address);
-      await apiFetch('contract_verification_via', {
+      await apiFetch('general:contract_verification_via', {
         pathParams: { method: data.method[0], hash: data.address.toLowerCase() },
         fetchParams: {
           method: 'POST',
@@ -205,7 +205,7 @@ const ContractVerificationForm = ({ method: methodFromQuery, config, hash }: Pro
         </Grid>
         { content }
         { formState.errors.root?.message && <Text color="text.error" mt={ 4 } fontSize="sm" whiteSpace="pre-wrap">{ formState.errors.root.message }</Text> }
-        { Boolean(method) && methodValue !== 'solidity-hardhat' && methodValue !== 'solidity-foundry' && (
+        { Boolean(method) && methodValue !== 'solidity-hardhat' && methodValue !== 'solidity-foundry' && methodValue !== 'sourcify' && (
           <Button
             size="md"
             type="submit"

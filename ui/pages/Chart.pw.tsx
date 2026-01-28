@@ -2,7 +2,7 @@ import React from 'react';
 
 import * as statsLineMock from 'mocks/stats/line';
 import { test, expect } from 'playwright/lib';
-import formatDate from 'ui/shared/chart/utils/formatIntervalDate';
+import { formatDate } from 'ui/shared/chart/utils';
 
 import Chart from './Chart';
 
@@ -23,7 +23,7 @@ test('base view +@dark-mode +@mobile', async({ render, mockApiResponse, page }) 
   date.setMonth(date.getMonth() - 1);
 
   const chartApiUrl = await mockApiResponse(
-    'stats_line',
+    'stats:line',
     statsLineMock.averageGasPrice,
     {
       pathParams: { id: CHART_ID },
@@ -38,7 +38,7 @@ test('base view +@dark-mode +@mobile', async({ render, mockApiResponse, page }) 
   const component = await render(<Chart/>, { hooksConfig });
   await page.waitForResponse(chartApiUrl);
   await page.waitForFunction(() => {
-    return document.querySelector('path[data-name="chart-Charttitle-fullscreen"]')?.getAttribute('opacity') === '1';
+    return document.querySelector('path[data-name="chart-fullscreen"]')?.getAttribute('opacity') === '1';
   });
   await expect(component).toHaveScreenshot();
 });

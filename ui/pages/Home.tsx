@@ -2,6 +2,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import React from 'react';
 
 import config from 'configs/app';
+import useIsMobile from 'lib/hooks/useIsMobile';
 import HeroBanner from 'ui/home/HeroBanner';
 import ChainIndicators from 'ui/home/indicators/ChainIndicators';
 import LatestArbitrumL2Batches from 'ui/home/latestBatches/LatestArbitrumL2Batches';
@@ -13,6 +14,7 @@ import Transactions from 'ui/home/Transactions';
 const rollupFeature = config.features.rollup;
 
 const Home = () => {
+  const isMobile = useIsMobile();
 
   const leftWidget = (() => {
     if (rollupFeature.isEnabled && !rollupFeature.homepage.showLatestBlocks) {

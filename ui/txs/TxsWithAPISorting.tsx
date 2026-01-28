@@ -11,7 +11,7 @@ import TxsContent from './TxsContent';
 
 type Props = {
 
-  query: QueryWithPagesResult<'address_txs'>;
+  query: QueryWithPagesResult<'general:address_txs'>;
   showBlockInfo?: boolean;
   socketType?: TxsSocketType;
   currentAddress?: string;
@@ -55,7 +55,7 @@ const TxsWithAPISorting = ({
       isError={ query.isError }
       setSorting={ handleSortChange }
       sort={ sorting }
-      query={ query }
+      pagination={ query.pagination }
     />
   );
 };

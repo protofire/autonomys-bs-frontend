@@ -3,13 +3,17 @@ import React, { useEffect, useState } from 'react';
 
 import config from 'configs/app';
 import { useRewardsContext } from 'lib/contexts/rewards';
+import useIsMobile from 'lib/hooks/useIsMobile';
 import { Alert } from 'toolkit/chakra/alert';
+import { Button } from 'toolkit/chakra/button';
 import { Link } from 'toolkit/chakra/link';
 import RoutedTabs from 'toolkit/components/RoutedTabs/RoutedTabs';
+import { useDisclosure } from 'toolkit/hooks/useDisclosure';
 import { apos } from 'toolkit/utils/htmlEntities';
 import DailyRewardClaimButton from 'ui/rewards/dashboard/DailyRewardClaimButton';
 import RewardsDashboardCard from 'ui/rewards/dashboard/RewardsDashboardCard';
 import RewardsDashboardCardValue from 'ui/rewards/dashboard/RewardsDashboardCardValue';
+import RewardsStreakModal from 'ui/rewards/dashboard/streakModal/RewardsStreakModal';
 import ActivityTab from 'ui/rewards/dashboard/tabs/ActivityTab';
 import ReferralsTab from 'ui/rewards/dashboard/tabs/ReferralsTab';
 import ResourcesTab from 'ui/rewards/dashboard/tabs/ResourcesTab';
@@ -18,6 +22,9 @@ import useRedirectForInvalidAuthToken from 'ui/snippets/auth/useRedirectForInval
 
 const RewardsDashboard = () => {
   const { balancesQuery, apiToken, referralsQuery, rewardsConfigQuery, dailyRewardQuery, isInitialized } = useRewardsContext();
+  const { nextAchievementText, isLoading: isBadgesLoading, badgesQuery } = useStreakBadges();
+  const streakModal = useDisclosure();
+  const isMobile = useIsMobile();
 
   const [ isError, setIsError ] = useState(false);
 
@@ -37,16 +44,9 @@ const RewardsDashboard = () => {
     return null;
   }
 
-  let shareText = `Claim your free @blockscout #Merits and start building your daily streak today! #Blockscout #Merits #IYKYK\n\nBoost your rewards instantly by using my referral code: ${ referralsQuery.data?.link }`; // eslint-disable-line max-len
-
-  if (dailyRewardQuery.data?.streak && Number(dailyRewardQuery.data.streak) > 0) {
-    const days = `day${ Number(dailyRewardQuery.data.streak) === 1 ? '' : 's' }`;
-    shareText = `I${ apos }ve claimed Merits ${ dailyRewardQuery.data.streak } ${ days } in a row!\n\n` + shareText;
-  }
-
   return (
     <>
-      <Flex gap={ 3 } justifyContent="space-between">
+      <Flex gap={ 3 } justifyContent="space-between" mb={ 6 }>
         <PageTitle
           title="Dashboard"
           secondRow={ (
@@ -57,6 +57,7 @@ const RewardsDashboard = () => {
               to earn, spend, and learn more about the program.
             </span>
           ) }
+          mb={ 0 }
         />
       </Flex>
       <Flex flexDirection="column" alignItems="flex-start" w="full" gap={ 6 }>
@@ -66,7 +67,7 @@ const RewardsDashboard = () => {
             title="All Merits"
             description="Claim your daily Merits and any Merits received from referrals."
             contentDirection="column-reverse"
-            cardValueStyle={{ minH: { base: '64px', md: '88px' } }}
+            cardValueStyle={{ minH: { base: '64px', md: '116px' } }}
             contentAfter={ <DailyRewardClaimButton/> }
             hint={ (
               <>
@@ -87,7 +88,7 @@ const RewardsDashboard = () => {
             title="Referrals"
             description="Total number of users who have joined the program using your code or referral link."
             contentDirection="column-reverse"
-            cardValueStyle={{ minH: { base: '64px', md: '88px' } }}
+            cardValueStyle={{ minH: { base: '64px', md: '116px' } }}
           >
             <RewardsDashboardCardValue
               value={ referralsQuery.data?.referrals ?
@@ -99,15 +100,9 @@ const RewardsDashboard = () => {
           </RewardsDashboardCard>
           <RewardsDashboardCard
             title="Streak"
-            description={ (
-              <>
-                Current number of consecutive days you{ apos }ve claimed your daily Merits.{ ' ' }
-                The longer your streak, the more daily Merits you can earn.{ ' ' }
-                <Link external href={ `https://x.com/intent/tweet?text=${ encodeURIComponent(shareText) }` } fontWeight="500">
-                  Share on X
-                </Link>
-              </>
-            ) }
+            description={
+              `Current number of consecutive days you${ apos }ve claimed your daily Merits. The longer your streak, the more daily Merits you can earn.`
+            }
             hint={ (
               <>
                 See the{ ' ' }
@@ -116,15 +111,20 @@ const RewardsDashboard = () => {
               </>
             ) }
             contentDirection="column-reverse"
-            cardValueStyle={{ minH: { base: '64px', md: '88px' } }}
+            cardValueStyle={{ minH: { base: '64px', md: '116px' } }}
+            contentAfter={ (
+              <Button mt={ 3 } onClick={ streakModal.onOpen } loading={ isBadgesLoading }>
+                Check achievements
+              </Button>
+            ) }
           >
             <RewardsDashboardCardValue
-              value={
-                dailyRewardQuery.data?.streak ?
-                  `${ dailyRewardQuery.data?.streak } day${ Number(dailyRewardQuery.data?.streak) === 1 ? '' : 's' }` :
-                  'N/A'
-              }
+              value={ dailyRewardQuery.data?.streak ?
+                `${ dailyRewardQuery.data?.streak } day${ Number(dailyRewardQuery.data?.streak) === 1 ? '' : 's' }` :
+                'N/A' }
               isLoading={ dailyRewardQuery.isPending }
+              bottomText={ nextAchievementText }
+              isBottomTextLoading={ isBadgesLoading }
             />
           </RewardsDashboardCard>
         </Flex>
@@ -149,6 +149,14 @@ const RewardsDashboard = () => {
           ] }
         />
       </Flex>
+      { !isBadgesLoading && !dailyRewardQuery.isPending && (
+        <RewardsStreakModal
+          open={ streakModal.open }
+          onOpenChange={ streakModal.onOpenChange }
+          currentStreak={ Number(dailyRewardQuery.data?.streak || 0) }
+          badges={ badgesQuery.data?.items }
+        />
+      ) }
     </>
   );
 };

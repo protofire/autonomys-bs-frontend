@@ -13,7 +13,7 @@ import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import ListItemMobileGrid from 'ui/shared/ListItemMobile/ListItemMobileGrid';
 import ScrollL2TxnBatchStatus from 'ui/shared/statusTag/ScrollL2TxnBatchStatus';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 
 const rollupFeature = config.features.rollup;
 
@@ -59,12 +59,13 @@ const ScrollL2TxnBatchesListItem = ({ item, isLoading }: Props) => {
         <TxEntityL1
           hash={ item.commitment_transaction.hash }
           isLoading={ isLoading }
+          noCopy
         />
       </ListItemMobileGrid.Value>
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>Age</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.commitment_transaction.timestamp }
           fallbackText="Undefined"
           isLoading={ isLoading }
@@ -88,6 +89,7 @@ const ScrollL2TxnBatchesListItem = ({ item, isLoading }: Props) => {
           <TxEntityL1
             hash={ item.confirmation_transaction.hash }
             isLoading={ isLoading }
+            noCopy
           />
         ) : <Skeleton loading={ isLoading } display="inline-block">Pending</Skeleton> }
       </ListItemMobileGrid.Value>

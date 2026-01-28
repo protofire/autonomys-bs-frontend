@@ -1,10 +1,8 @@
-import { Flex, Grid } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
+import { Flex } from '@chakra-ui/react';
 import React from 'react';
 
 import type { ValidatorZilliqa } from 'types/api/validators';
 
-import config from 'configs/app';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
@@ -12,6 +10,7 @@ import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import HashStringShortenDynamic from 'ui/shared/HashStringShortenDynamic';
 import NativeTokenIcon from 'ui/shared/NativeTokenIcon';
+import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 
 interface Props {
   data: ValidatorZilliqa;
@@ -20,7 +19,7 @@ interface Props {
 
 const ValidatorDetails = ({ data, isLoading }: Props) => {
   return (
-    <Grid columnGap={ 8 } rowGap={ 3 } templateColumns={{ base: 'minmax(0, 1fr)', lg: 'max-content minmax(728px, auto)' }}>
+    <DetailedInfo.Container>
       <DetailedInfo.ItemLabel
         hint="Index of the staker in the committee"
         isLoading={ isLoading }
@@ -40,10 +39,11 @@ const ValidatorDetails = ({ data, isLoading }: Props) => {
         Staked
       </DetailedInfo.ItemLabel>
       <DetailedInfo.ItemValue>
-        <NativeTokenIcon isLoading={ isLoading } boxSize={ 5 } mr={ 2 }/>
-        <Skeleton loading={ isLoading } display="inline">
-          { BigNumber(data.balance).div(BigNumber(10 ** config.chain.currency.decimals)).toFormat() } { config.chain.currency.symbol }
-        </Skeleton>
+        <NativeCoinValue
+          startElement={ <NativeTokenIcon isLoading={ isLoading } boxSize={ 5 } mr={ 2 }/> }
+          amount={ data.balance }
+          loading={ isLoading }
+        />
       </DetailedInfo.ItemValue>
 
       { data.peer_id && (
@@ -114,7 +114,7 @@ const ValidatorDetails = ({ data, isLoading }: Props) => {
       <DetailedInfo.ItemValue>
         <BlockEntity number={ data.stake_updated_at_block_number } isLoading={ isLoading }/>
       </DetailedInfo.ItemValue>
-    </Grid>
+    </DetailedInfo.Container>
   );
 };
 

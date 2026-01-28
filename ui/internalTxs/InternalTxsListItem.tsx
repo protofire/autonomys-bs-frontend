@@ -1,10 +1,9 @@
 import { Flex, HStack } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
 import React from 'react';
 
 import type { InternalTransaction } from 'types/api/internalTransaction';
+import type { ClusterChainConfig } from 'types/multichain';
 
-import config from 'configs/app';
 import { currencyUnits } from 'lib/units';
 import { Badge } from 'toolkit/chakra/badge';
 import { Skeleton } from 'toolkit/chakra/skeleton';
@@ -13,10 +12,11 @@ import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import ListItemMobile from 'ui/shared/ListItemMobile/ListItemMobile';
 import TxStatus from 'ui/shared/statusTag/TxStatus';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
+import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 import { TX_INTERNALS_ITEMS } from 'ui/tx/internals/utils';
 
-type Props = InternalTransaction & { currentAddress?: string; isLoading?: boolean };
+type Props = InternalTransaction & { currentAddress?: string; isLoading?: boolean; showBlockInfo?: boolean; chainData?: ClusterChainConfig };
 
 const InternalTxsListItem = ({
   type,
@@ -31,6 +31,8 @@ const InternalTxsListItem = ({
   timestamp,
   currentAddress,
   isLoading,
+  showBlockInfo = true,
+  chainData,
 }: Props) => {
   const typeTitle = TX_INTERNALS_ITEMS.find(({ id }) => id === type)?.title;
   const toData = to ? to : createdContract;
@@ -47,8 +49,9 @@ const InternalTxsListItem = ({
           isLoading={ isLoading }
           fontWeight={ 700 }
           truncation="constant_long"
+          chain={ chainData }
         />
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ timestamp }
           isLoading={ isLoading }
           color="text.secondary"
@@ -56,15 +59,17 @@ const InternalTxsListItem = ({
           fontSize="sm"
         />
       </Flex>
-      <HStack gap={ 1 }>
-        <Skeleton loading={ isLoading } fontSize="sm" fontWeight={ 500 }>Block</Skeleton>
-        <BlockEntity
-          isLoading={ isLoading }
-          number={ blockNumber }
-          noIcon
-          textStyle="sm"
-        />
-      </HStack>
+      { showBlockInfo && (
+        <HStack gap={ 1 }>
+          <Skeleton loading={ isLoading } fontSize="sm" fontWeight={ 500 }>Block</Skeleton>
+          <BlockEntity
+            isLoading={ isLoading }
+            number={ blockNumber }
+            noIcon
+            textStyle="sm"
+          />
+        </HStack>
+      ) }
       <AddressFromTo
         from={ from }
         to={ toData }
@@ -74,9 +79,15 @@ const InternalTxsListItem = ({
       />
       <HStack gap={ 3 }>
         <Skeleton loading={ isLoading } fontSize="sm" fontWeight={ 500 }>Value { currencyUnits.ether }</Skeleton>
-        <Skeleton loading={ isLoading } fontSize="sm" color="text.secondary" minW={ 6 }>
-          <span>{ BigNumber(value).div(BigNumber(10 ** config.chain.currency.decimals)).toFormat() }</span>
-        </Skeleton>
+        <NativeCoinValue
+          amount={ value }
+          noSymbol
+          accuracy={ 0 }
+          loading={ isLoading }
+          minW={ 6 }
+          fontSize="sm"
+          color="text.secondary"
+        />
       </HStack>
     </ListItemMobile>
   );

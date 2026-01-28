@@ -8,15 +8,14 @@ import React from 'react';
 import type { NextPageWithLayout } from 'nextjs/types';
 
 import config from 'configs/app';
+import getSocketUrl from 'lib/api/getSocketUrl';
 import useQueryClientConfig from 'lib/api/useQueryClientConfig';
 import { AppContextProvider } from 'lib/contexts/app';
 import { MarketplaceContextProvider } from 'lib/contexts/marketplace';
 import { RewardsContextProvider } from 'lib/contexts/rewards';
-import { ScrollDirectionProvider } from 'lib/contexts/scrollDirection';
 import { SettingsContextProvider } from 'lib/contexts/settings';
 import { initGrowthBook } from 'lib/growthbook/init';
 import useLoadFeatures from 'lib/growthbook/useLoadFeatures';
-import useNotifyOnNavigation from 'lib/hooks/useNotifyOnNavigation';
 import { clientConfig as rollbarConfig, Provider as RollbarProvider } from 'lib/rollbar';
 import { SocketProvider } from 'lib/socket/context';
 import { Provider as ChakraProvider } from 'toolkit/chakra/provider';
@@ -31,6 +30,7 @@ import Web3ModalProvider from 'ui/shared/Web3ModalProvider';
 
 import 'lib/setLocale';
 // import 'focus-visible/dist/focus-visible';
+import 'nextjs/global.css';
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -48,27 +48,47 @@ const ERROR_SCREEN_STYLES: HTMLChakraProps<'div'> = {
   p: { base: 4, lg: 0 },
 };
 
+const CONSOLE_SCAM_WARNING = `⚠️WARNING: Do not paste or execute any scripts here!
+Anyone asking you to run code here might be trying to scam you and steal your data.
+If you don't understand what this console is for, close it now and stay safe.`;
+
+const CONSOLE_SCAM_WARNING_DELAY_MS = 500;
+
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  // to avoid hydration mismatch between server and client
-  // we have to render the app only on client (when it is mounted)
-  // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#avoid-hydration-mismatch
-  const [ mounted, setMounted ] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useLoadFeatures(pageProps.uuid);
-  useNotifyOnNavigation();
 
   const growthBook = initGrowthBook(pageProps.uuid);
+  useLoadFeatures(growthBook);
+
   const queryClient = useQueryClientConfig();
 
-  if (!mounted) {
-    return null;
-  }
+  React.useEffect(() => {
+    // after the app is rendered/hydrated, show the console scam warning
+    const timeoutId = window.setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.warn(CONSOLE_SCAM_WARNING);
+    }, CONSOLE_SCAM_WARNING_DELAY_MS);
 
-  const getLayout = Component.getLayout ?? ((page) => <Layout>{ page }</Layout>);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  const content = (() => {
+    const getLayout = Component.getLayout ?? ((page) => <Layout>{ page }</Layout>);
+
+    return (
+      <>
+        { getLayout(<Component { ...pageProps }/>) }
+        <Toaster/>
+        { config.features.rewards.isEnabled && (
+          <>
+            <RewardsLoginModal/>
+            <RewardsActivityTracker/>
+          </>
+        ) }
+      </>
+    );
+  })();
+
+  const socketUrl = !config.features.opSuperchain.isEnabled ? getSocketUrl() : undefined;
 
   return (
     <ChakraProvider>
@@ -81,24 +101,15 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             <AppContextProvider pageProps={ pageProps }>
               <QueryClientProvider client={ queryClient }>
                 <GrowthBookProvider growthbook={ growthBook }>
-                  <ScrollDirectionProvider>
-                    <SocketProvider url={ `${ config.api.socket }${ config.api.basePath }/socket/v2` }>
-                      <RewardsContextProvider>
-                        <MarketplaceContextProvider>
-                          <SettingsContextProvider>
-                            { getLayout(<Component { ...pageProps }/>) }
-                            <Toaster/>
-                            { config.features.rewards.isEnabled && (
-                              <>
-                                <RewardsLoginModal/>
-                                <RewardsActivityTracker/>
-                              </>
-                            ) }
-                          </SettingsContextProvider>
-                        </MarketplaceContextProvider>
-                      </RewardsContextProvider>
-                    </SocketProvider>
-                  </ScrollDirectionProvider>
+                  <SocketProvider url={ socketUrl }>
+                    <RewardsContextProvider>
+                      <MarketplaceContextProvider>
+                        <SettingsContextProvider>
+                          { content }
+                        </SettingsContextProvider>
+                      </MarketplaceContextProvider>
+                    </RewardsContextProvider>
+                  </SocketProvider>
                 </GrowthBookProvider>
                 <ReactQueryDevtools buttonPosition="bottom-left" position="left"/>
                 <GoogleAnalytics/>

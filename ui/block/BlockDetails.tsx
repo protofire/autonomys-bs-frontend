@@ -30,6 +30,7 @@ import BatchEntityL2 from 'ui/shared/entities/block/BatchEntityL2';
 import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import HashStringShortenDynamic from 'ui/shared/HashStringShortenDynamic';
+import IconSvg from 'ui/shared/IconSvg';
 import PrevNext from 'ui/shared/PrevNext';
 import RawDataSnippet from 'ui/shared/RawDataSnippet';
 import StatusTag from 'ui/shared/statusTag/StatusTag';
@@ -501,7 +502,7 @@ const BlockDetails = ({ query }: Props) => {
             { !txFees.isEqualTo(ZERO) && (
               <Tooltip content="Burnt fees / Txn fees * 100%">
                 <Utilization
-                  value={ txFees.dividedBy(WEI).toFixed() }
+                  value={ txFees.dividedBy(WEI).toNumber() }
                   isLoading={ isPlaceholderData }
                 />
               </Tooltip>

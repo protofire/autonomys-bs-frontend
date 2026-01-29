@@ -24,6 +24,7 @@ import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 import Utilization from 'ui/shared/Utilization/Utilization';
 import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 import SimpleValue from 'ui/shared/value/SimpleValue';
+import { WEI } from 'ui/shared/value/utils';
 
 interface Props {
   data: Block;
@@ -121,14 +122,13 @@ const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chain
           <Text fontWeight={ 500 }>Txn fees</Text>
           <Flex columnGap={ 4 } mt={ 2 }>
             <NativeCoinValue
-              amount={ data.burnt_fees }
+              amount={ txFees.div(WEI).toFixed(8) }
               noSymbol
-              startElement={ <IconSvg name="flame" mr={ 2 } boxSize={ 5 } color={{ _light: 'gray.500', _dark: 'inherit' }} isLoading={ isLoading }/> }
               loading={ isLoading }
               display="flex"
               color="text.secondary"
             />
-            <Utilization value={ txFees.div(WEI).toFixed() } isLoading={ isLoading }/>
+            <Utilization value={ txFees.div(WEI).toNumber() } isLoading={ isLoading }/>
           </Flex>
         </Box>
       ) }

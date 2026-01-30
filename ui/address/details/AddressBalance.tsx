@@ -97,7 +97,7 @@ const AddressBalance = ({ data, isLoading }: Props) => {
       </DetailedInfo.ItemLabel>
       <DetailedInfo.ItemValue multiRow>
         <NativeCoinValue
-          amount={ data.coin_balance || '0' }
+          amount={ displayBalance }
           exchangeRate={ data.exchange_rate }
           startElement={ <NativeTokenIcon boxSize={ 5 } isLoading={ isBalanceLoading } mr={ 2 }/> }
           loading={ isBalanceLoading }

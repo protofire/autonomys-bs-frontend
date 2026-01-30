@@ -608,15 +608,6 @@ const BlockDetails = ({ query }: Props) => {
           </>
         ) }
 
-        { /* <DetailedInfo.ItemLabel
-          hint={ `Block difficulty for ${ validatorTitle }, used to calibrate block generation time` }
-        >
-          Difficulty
-        </DetailedInfo.ItemLabel>
-        <DetailedInfo.ItemValue overflow="hidden">
-          <HashStringShortenDynamic hash={ BigNumber(data.difficulty).toFormat() }/>
-        </DetailedInfo.ItemValue> */ }
-
         { /* { data.total_difficulty && (
           <>
             <DetailedInfo.ItemLabel

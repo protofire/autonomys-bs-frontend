@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - 'testnet'
-      - 'testnet-v2.6.0'
 
 name: Docker build and push
 

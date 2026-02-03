@@ -9,7 +9,10 @@ import type {
   SearchResultBlob,
   SearchResultDomain,
   SearchResultMetadataTag,
+  SearchResultTacOperation,
 } from 'types/api/search';
+
+import * as tacOperationMock from 'mocks/operations/tac';
 
 export const token1: SearchResultToken = {
   address_hash: '0x377c5F2B300B25a534d4639177873b7fEAA56d4B',
@@ -24,6 +27,7 @@ export const token1: SearchResultToken = {
   exchange_rate: null,
   is_verified_via_admin_panel: true,
   is_smart_contract_verified: true,
+  reputation: 'ok',
 };
 
 export const token2: SearchResultToken = {
@@ -39,6 +43,7 @@ export const token2: SearchResultToken = {
   exchange_rate: '1.11',
   is_verified_via_admin_panel: false,
   is_smart_contract_verified: false,
+  reputation: 'ok',
 };
 
 export const block1: SearchResultBlock = {
@@ -166,7 +171,9 @@ export const metatag2: SearchResultMetadataTag = {
   metadata: {
     name: 'utko',
     slug: 'utko',
-    meta: {},
+    meta: {
+      cexDeposit: 'true',
+    },
     tagType: 'name',
     ordinal: 1,
   },
@@ -184,6 +191,11 @@ export const metatag3: SearchResultMetadataTag = {
   },
 };
 
+export const tacOperation1: SearchResultTacOperation = {
+  type: 'tac_operation',
+  tac_operation: tacOperationMock.tacOperation,
+};
+
 export const baseResponse: SearchResult = {
   items: [
     token1,
@@ -195,7 +207,7 @@ export const baseResponse: SearchResult = {
     blob1,
     domain1,
     metatag1,
-
+    tacOperation1,
   ],
   next_page_params: null,
 };

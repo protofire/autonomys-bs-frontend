@@ -19,12 +19,12 @@ const TABS_HEIGHT = 88;
 
 type Props = {
   token?: TokenInfo;
-  holdersQuery: QueryWithPagesResult<'token_holders'>;
+  holdersQuery: QueryWithPagesResult<'general:token_holders'>;
   shouldRender?: boolean;
   tabsHeight?: number;
 };
 
-const TokenHoldersContent = ({ holdersQuery, token, shouldRender = true, tabsHeight = TABS_HEIGHT }: Props) => {
+const TokenHolders = ({ holdersQuery, token, shouldRender = true, tabsHeight = TABS_HEIGHT }: Props) => {
   const isMobile = useIsMobile();
   const isMounted = useIsMounted();
 
@@ -83,4 +83,4 @@ const TokenHoldersContent = ({ holdersQuery, token, shouldRender = true, tabsHei
   );
 };
 
-export default TokenHoldersContent;
+export default TokenHolders;

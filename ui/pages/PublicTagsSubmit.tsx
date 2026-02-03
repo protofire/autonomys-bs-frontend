@@ -3,9 +3,9 @@ import React from 'react';
 import type { FormSubmitResult } from 'ui/publicTags/submit/types';
 
 import useApiQuery from 'lib/api/useApiQuery';
+import { ContentLoader } from 'toolkit/components/loaders/ContentLoader';
 import PublicTagsSubmitForm from 'ui/publicTags/submit/PublicTagsSubmitForm';
 import PublicTagsSubmitResult from 'ui/publicTags/submit/PublicTagsSubmitResult';
-import ContentLoader from 'ui/shared/ContentLoader';
 import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import PageTitle from 'ui/shared/Page/PageTitle';
 import useProfileQuery from 'ui/snippets/auth/useProfileQuery';
@@ -18,7 +18,7 @@ const PublicTagsSubmit = () => {
   const [ submitResult, setSubmitResult ] = React.useState<FormSubmitResult>();
 
   const profileQuery = useProfileQuery();
-  const configQuery = useApiQuery('address_metadata_tag_types', { queryOptions: { enabled: !profileQuery.isLoading } });
+  const configQuery = useApiQuery('metadata:public_tag_types', { queryOptions: { enabled: !profileQuery.isLoading } });
 
   React.useEffect(() => {
     if (!configQuery.isPending) {

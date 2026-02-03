@@ -7,7 +7,6 @@ import useDebounce from 'lib/hooks/useDebounce';
 import getQueryParamString from 'lib/router/getQueryParamString';
 import { POOL } from 'stubs/pools';
 import { FilterInput } from 'toolkit/components/filters/FilterInput';
-import { apos } from 'toolkit/utils/htmlEntities';
 import PoolsListItem from 'ui/pools/PoolsListItem';
 import PoolsTable from 'ui/pools/PoolsTable';
 import ActionBar, { ACTION_BAR_HEIGHT_DESKTOP } from 'ui/shared/ActionBar';
@@ -24,7 +23,7 @@ const Pools = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const poolsQuery = useQueryWithPages({
-    resourceName: 'pools',
+    resourceName: 'contractInfo:pools',
     pathParams: { chainId: config.chain.id },
     filters: { query: debouncedSearchTerm },
     options: {
@@ -42,7 +41,7 @@ const Pools = () => {
       <Box hideFrom="lg">
         { poolsQuery.data?.items.map((item, index) => (
           <PoolsListItem
-            key={ item.contract_address + (poolsQuery.isPlaceholderData ? index : '') }
+            key={ item.pool_id + (poolsQuery.isPlaceholderData ? index : '') }
             isLoading={ poolsQuery.isPlaceholderData }
             item={ item }
           />
@@ -97,9 +96,9 @@ const Pools = () => {
         itemsNum={ poolsQuery.data?.items.length }
         emptyText="There are no pools."
         actionBar={ actionBar }
-        filterProps={{
-          emptyFilteredText: `Couldn${ apos }t find pools that matches your filter query.`,
-          hasActiveFilters: Boolean(debouncedSearchTerm),
+        hasActiveFilters={ Boolean(debouncedSearchTerm) }
+        emptyStateProps={{
+          term: 'pool',
         }}
       >
         { content }

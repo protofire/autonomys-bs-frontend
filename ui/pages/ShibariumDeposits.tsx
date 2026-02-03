@@ -14,11 +14,11 @@ import PageTitle from 'ui/shared/Page/PageTitle';
 import useQueryWithPages from 'ui/shared/pagination/useQueryWithPages';
 import StickyPaginationWithText from 'ui/shared/StickyPaginationWithText';
 
-const L2Deposits = () => {
+const ShibariumDeposits = () => {
   const { data, isError, isPlaceholderData, pagination } = useQueryWithPages({
-    resourceName: 'shibarium_deposits',
+    resourceName: 'general:shibarium_deposits',
     options: {
-      placeholderData: generateListStub<'shibarium_deposits'>(
+      placeholderData: generateListStub<'general:shibarium_deposits'>(
         SHIBARIUM_DEPOSIT_ITEM,
         50,
         {
@@ -31,7 +31,7 @@ const L2Deposits = () => {
     },
   });
 
-  const countersQuery = useApiQuery('shibarium_deposits_count', {
+  const countersQuery = useApiQuery('general:shibarium_deposits_count', {
     queryOptions: {
       placeholderData: 1927029,
     },
@@ -86,4 +86,4 @@ const L2Deposits = () => {
   );
 };
 
-export default L2Deposits;
+export default ShibariumDeposits;

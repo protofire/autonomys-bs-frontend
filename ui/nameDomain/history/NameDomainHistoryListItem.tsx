@@ -10,7 +10,7 @@ import { stripTrailingSlash } from 'toolkit/utils/url';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import ListItemMobileGrid from 'ui/shared/ListItemMobile/ListItemMobileGrid';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 
 interface Props {
   event: bens.DomainEvent;
@@ -21,7 +21,7 @@ interface Props {
 const NameDomainHistoryListItem = ({ isLoading, domain, event }: Props) => {
   const isProtocolBaseChain = stripTrailingSlash(domain?.protocol?.deployment_blockscout_base_url ?? '') === config.app.baseUrl;
   const txEntityProps = {
-    isExternal: !isProtocolBaseChain ? true : false,
+    link: { external: !isProtocolBaseChain ? true : false },
     href: !isProtocolBaseChain ? (
       stripTrailingSlash(domain?.protocol?.deployment_blockscout_base_url ?? '') +
       route({ pathname: '/tx/[hash]', query: { hash: event.transaction_hash } })
@@ -32,12 +32,12 @@ const NameDomainHistoryListItem = ({ isLoading, domain, event }: Props) => {
     <ListItemMobileGrid.Container>
       <ListItemMobileGrid.Label isLoading={ isLoading }>Txn hash</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <TxEntity { ...txEntityProps } hash={ event.transaction_hash } isLoading={ isLoading } fontWeight={ 500 } truncation="constant_long"/>
+        <TxEntity { ...txEntityProps } hash={ event.transaction_hash } isLoading={ isLoading } fontWeight={ 500 } truncation="constant_long" noCopy/>
       </ListItemMobileGrid.Value>
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>Age</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ event.timestamp }
           isLoading={ isLoading }
           color="text.secondary"

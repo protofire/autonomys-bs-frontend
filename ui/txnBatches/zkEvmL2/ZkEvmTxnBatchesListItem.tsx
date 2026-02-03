@@ -11,7 +11,7 @@ import BatchEntityL2 from 'ui/shared/entities/block/BatchEntityL2';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import ListItemMobileGrid from 'ui/shared/ListItemMobile/ListItemMobileGrid';
 import ZkEvmL2TxnBatchStatus from 'ui/shared/statusTag/ZkEvmL2TxnBatchStatus';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 
 const rollupFeature = config.features.rollup;
 
@@ -42,7 +42,7 @@ const ZkEvmTxnBatchesListItem = ({ item, isLoading }: Props) => {
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>Age</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.timestamp }
           fallbackText="Undefined"
           isLoading={ isLoading }
@@ -70,6 +70,7 @@ const ZkEvmTxnBatchesListItem = ({ item, isLoading }: Props) => {
             hash={ item.verify_transaction_hash }
             textStyle="sm"
             truncation="constant_long"
+            noCopy
           />
         ) : <Text>Pending</Text> }
       </ListItemMobileGrid.Value>
@@ -82,6 +83,7 @@ const ZkEvmTxnBatchesListItem = ({ item, isLoading }: Props) => {
             hash={ item.sequence_transaction_hash }
             textStyle="sm"
             truncation="constant_long"
+            noCopy
           />
         ) : <Text>Pending</Text> }
       </ListItemMobileGrid.Value>

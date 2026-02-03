@@ -8,7 +8,6 @@ import type { TokenTransfer } from 'types/api/tokenTransfer';
 import getFilterValuesFromQuery from 'lib/getFilterValuesFromQuery';
 import { TOKEN_TYPE_IDS } from 'lib/token/tokenTypes';
 import { getTokenTransfersStub } from 'stubs/token';
-import { apos } from 'toolkit/utils/htmlEntities';
 import ActionBar, { ACTION_BAR_HEIGHT_DESKTOP } from 'ui/shared/ActionBar';
 import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import DataListDisplay from 'ui/shared/DataListDisplay';
@@ -35,7 +34,7 @@ const TxTokenTransfer = ({ txQuery, tokenTransferFilter }: Props) => {
   const [ typeFilter, setTypeFilter ] = React.useState<Array<TokenType>>(getTokenFilterValue(router.query.type) || []);
 
   const tokenTransferQuery = useQueryWithPages({
-    resourceName: 'tx_token_transfers',
+    resourceName: 'general:tx_token_transfers',
     pathParams: { hash: txQuery.data?.hash.toString() },
     options: {
       enabled: !txQuery.isPlaceholderData && Boolean(txQuery.data?.status && txQuery.data?.hash),
@@ -98,9 +97,9 @@ const TxTokenTransfer = ({ txQuery, tokenTransferFilter }: Props) => {
       isError={ txQuery.isError || tokenTransferQuery.isError }
       itemsNum={ items.length }
       emptyText="There are no token transfers."
-      filterProps={{
-        emptyFilteredText: `Couldn${ apos }t find any token transfer that matches your query.`,
-        hasActiveFilters: Boolean(numActiveFilters),
+      hasActiveFilters={ Boolean(numActiveFilters) }
+      emptyStateProps={{
+        term: 'token transfer',
       }}
       actionBar={ actionBar }
     >

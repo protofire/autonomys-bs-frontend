@@ -30,7 +30,10 @@ const TxExternalTxs: React.FC<Props> = ({ data }) => {
             key={ txHash }
             hash={ txHash }
             href={ externalTxFeature.explorerUrlTemplate.replace('{hash}', txHash) }
-            isExternal
+            link={{ external: true }}
+            noCopy
+            // tooltip inside tooltip doesn't work well
+            noTooltip
           />
         )) }
       </Flex>
@@ -41,18 +44,20 @@ const TxExternalTxs: React.FC<Props> = ({ data }) => {
     <Tooltip
       content={ content }
       variant="popover"
+      interactive
       positioning={{ placement: 'bottom-end' }}
       openDelay={ 300 }
       contentProps={{ w: { base: '300px', lg: '460px' } }}
     >
       <Link
-        _hover={{ textDecoration: 'none', color: 'link.primary.hover' }}
         display="inline-flex"
         alignItems="center"
         gap={ 2 }
+        textDecorationLine="underline"
+        textDecorationStyle="dashed"
       >
         <Image src={ externalTxFeature.chainLogoUrl } alt={ externalTxFeature.chainName } boxSize={ 5 }/>
-        { data.length } { externalTxFeature.chainName } txn{ data.length > 1 ? 's' : '' }
+        { `${ data.length } ${ externalTxFeature.chainName } txn${ data.length > 1 ? 's' : '' }` }
       </Link>
     </Tooltip>
   );

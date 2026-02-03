@@ -1,9 +1,8 @@
 import { chakra, Tag as ChakraTag } from '@chakra-ui/react';
 import * as React from 'react';
 
-import { nbsp } from 'toolkit/utils/htmlEntities';
-
 import { TruncatedTextTooltip } from '../components/truncation/TruncatedTextTooltip';
+import { nbsp } from '../utils/htmlEntities';
 import { CloseButton } from './close-button';
 import { Skeleton } from './skeleton';
 
@@ -17,6 +16,7 @@ export interface TagProps extends ChakraTag.RootProps {
   truncated?: boolean;
   loading?: boolean;
   selected?: boolean;
+  disabled?: boolean;
 }
 
 export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
@@ -32,6 +32,7 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
       truncated = false,
       loading,
       selected,
+      disabled,
       ...rest
     } = props;
 
@@ -49,7 +50,8 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
       <Skeleton loading={ loading } asChild>
         <ChakraTag.Root
           ref={ ref }
-          { ...(selected && { 'data-selected': true }) }
+          { ...(selected && !loading && { 'data-selected': true }) }
+          { ...(disabled && { 'data-disabled': true }) }
           { ...rest }
         >
           { startElement && (

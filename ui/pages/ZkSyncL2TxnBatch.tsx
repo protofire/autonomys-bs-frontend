@@ -4,7 +4,6 @@ import React from 'react';
 import type { TabItemRegular } from 'toolkit/components/AdaptiveTabs/types';
 
 import useApiQuery from 'lib/api/useApiQuery';
-import { useAppContext } from 'lib/contexts/app';
 import throwOnAbsentParamError from 'lib/errors/throwOnAbsentParamError';
 import throwOnResourceLoadError from 'lib/errors/throwOnResourceLoadError';
 import useIsMobile from 'lib/hooks/useIsMobile';
@@ -30,12 +29,11 @@ const TABS_HEIGHT = 80;
 
 const ZkSyncL2TxnBatch = () => {
   const router = useRouter();
-  const appProps = useAppContext();
   const number = getQueryParamString(router.query.number);
   const tab = getQueryParamString(router.query.tab);
   const isMobile = useIsMobile();
 
-  const batchQuery = useApiQuery('zksync_l2_txn_batch', {
+  const batchQuery = useApiQuery('general:zksync_l2_txn_batch', {
     pathParams: { number },
     queryOptions: {
       enabled: Boolean(number),
@@ -44,11 +42,11 @@ const ZkSyncL2TxnBatch = () => {
   });
 
   const batchTxsQuery = useQueryWithPages({
-    resourceName: 'zksync_l2_txn_batch_txs',
+    resourceName: 'general:zksync_l2_txn_batch_txs',
     pathParams: { number },
     options: {
       enabled: Boolean(!batchQuery.isPlaceholderData && batchQuery.data?.number && tab === 'txs'),
-      placeholderData: generateListStub<'zksync_l2_txn_batch_txs'>(TX, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:zksync_l2_txn_batch_txs'>(TX, 50, { next_page_params: {
         batch_number: '8122',
         block_number: 1338932,
         index: 0,
@@ -71,26 +69,10 @@ const ZkSyncL2TxnBatch = () => {
     },
   ].filter(Boolean)), [ batchQuery, batchTxsQuery, hasPagination ]);
 
-  const backLink = React.useMemo(() => {
-    const hasGoBackLink = appProps.referrer && appProps.referrer.endsWith('/batches');
-
-    if (!hasGoBackLink) {
-      return;
-    }
-
-    return {
-      label: 'Back to txn batches list',
-      url: appProps.referrer,
-    };
-  }, [ appProps.referrer ]);
-
   return (
     <>
       <TextAd mb={ 6 }/>
-      <PageTitle
-        title={ `Txn batch #${ number }` }
-        backLink={ backLink }
-      />
+      <PageTitle title={ `Txn batch #${ number }` }/>
       <RoutedTabs
         tabs={ tabs }
         isLoading={ batchQuery.isPlaceholderData }

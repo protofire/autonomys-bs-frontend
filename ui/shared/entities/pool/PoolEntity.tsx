@@ -16,7 +16,7 @@ import * as TokenEntity from '../token/TokenEntity';
 type LinkProps = EntityBase.LinkBaseProps & Pick<EntityProps, 'pool'>;
 
 const Link = chakra((props: LinkProps) => {
-  const defaultHref = route({ pathname: '/pools/[hash]', query: { hash: props.pool.contract_address } });
+  const defaultHref = route({ pathname: '/pools/[hash]', query: { hash: props.pool.pool_id } });
 
   return (
     <EntityBase.Link
@@ -31,12 +31,11 @@ const Link = chakra((props: LinkProps) => {
 type IconProps = Pick<EntityProps, 'pool' | 'className'> & EntityBase.IconBaseProps;
 
 const Icon = (props: IconProps) => {
-  const bgColor = { _light: 'white', _dark: 'black' };
   const borderColor = { _light: 'whiteAlpha.800', _dark: 'blackAlpha.800' };
   return (
     <Flex>
       <Flex
-        bgColor={ bgColor }
+        bgColor="bg.primary"
         borderRadius="full"
         border="1px solid"
         borderColor={ borderColor }
@@ -50,13 +49,14 @@ const Icon = (props: IconProps) => {
             address_hash: props.pool.base_token_address,
             name: '',
             type: 'ERC-20',
+            reputation: null,
           }}
           isLoading={ props.isLoading }
         />
       </Flex>
       <Flex
         transform="translateX(-8px)"
-        bgColor={ bgColor }
+        bgColor="bg.primary"
         borderRadius="full"
         border="1px solid"
         borderColor={ borderColor }
@@ -70,6 +70,7 @@ const Icon = (props: IconProps) => {
             address_hash: props.pool.quote_token_address,
             name: '',
             type: 'ERC-20',
+            reputation: null,
           }}
           isLoading={ props.isLoading }
         />

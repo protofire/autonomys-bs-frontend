@@ -56,6 +56,46 @@ test.describe('contract', () => {
   });
 });
 
+test.describe('shield', () => {
+  const ICON_URL = 'https://images.com/icons/shield.png';
+  test.use({ viewport: { width: 500, height: 200 } });
+
+  test('regular address with image', async({ render, page, mockAssetResponse }) => {
+    await mockAssetResponse(ICON_URL, './playwright/mocks/image_svg.svg');
+
+    await render(
+      <AddressEntity
+        address={{ ...addressMock.withoutName }}
+        icon={{
+          shield: { src: ICON_URL },
+          hint: 'Address on TON',
+        }}
+      />,
+    );
+    await page.locator('img').first().hover();
+    await page.locator('div').filter({ hasText: 'Address on TON' }).first().waitFor({ state: 'visible' });
+
+    await expect(page).toHaveScreenshot();
+  });
+
+  test('contract with icon', async({ render, page }) => {
+    await render(
+      <AddressEntity
+        address={{ ...addressMock.contract, is_verified: true, implementations: null }}
+        icon={{
+          shield: { name: 'brands/ton' },
+          hint: 'Address on TON',
+          hintPostfix: ' on TON',
+        }}
+      />,
+    );
+    await page.getByRole('img').first().hover();
+    await page.locator('div').filter({ hasText: 'Verified contract on TON' }).first().waitFor({ state: 'visible' });
+
+    await expect(page).toHaveScreenshot();
+  });
+});
+
 test.describe('proxy contract', () => {
   test.use({ viewport: { width: 500, height: 300 } });
 
@@ -179,11 +219,27 @@ test('with name tag', async({ render }) => {
   await expect(component).toHaveScreenshot();
 });
 
+test.describe('with cex deposit tag', () => {
+  test.use({ viewport: { width: 500, height: 140 } });
+
+  test('default', async({ render }) => {
+    const address = { ...addressMock.withNameTag, metadata: { reputation: 1, tags: [ metadataMock.cexDepositTag ] } };
+
+    const component = await render(
+      <AddressEntity
+        address={ address }
+      />,
+    );
+
+    await expect(component).toHaveScreenshot();
+  });
+});
+
 test('external link', async({ render }) => {
   const component = await render(
     <AddressEntity
       address={ addressMock.withoutName }
-      isExternal
+      link={{ external: true }}
     />,
   );
 

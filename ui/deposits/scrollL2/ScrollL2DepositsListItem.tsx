@@ -4,13 +4,13 @@ import React from 'react';
 import type { ScrollL2MessageItem } from 'types/api/scrollL2';
 
 import config from 'configs/app';
-import getCurrencyValue from 'lib/getCurrencyValue';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import ListItemMobileGrid from 'ui/shared/ListItemMobile/ListItemMobileGrid';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
+import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 
 const rollupFeature = config.features.rollup;
 
@@ -20,8 +20,6 @@ const ScrollL2DepositsListItem = ({ item, isLoading }: Props) => {
   if (!rollupFeature.isEnabled || rollupFeature.type !== 'scroll') {
     return null;
   }
-
-  const { valueStr } = getCurrencyValue({ value: item.value, decimals: String(config.chain.currency.decimals) });
 
   return (
     <ListItemMobileGrid.Container>
@@ -48,12 +46,13 @@ const ScrollL2DepositsListItem = ({ item, isLoading }: Props) => {
           isLoading={ isLoading }
           hash={ item.origination_transaction_hash }
           truncation="constant_long"
+          noCopy
         />
       </ListItemMobileGrid.Value>
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>Age</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.origination_timestamp }
           isLoading={ isLoading }
           display="inline-block"
@@ -77,9 +76,10 @@ const ScrollL2DepositsListItem = ({ item, isLoading }: Props) => {
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>Value</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <Skeleton loading={ isLoading } display="inline-block">
-          { `${ valueStr } ${ config.chain.currency.symbol }` }
-        </Skeleton>
+        <NativeCoinValue
+          amount={ item.value }
+          loading={ isLoading }
+        />
       </ListItemMobileGrid.Value>
 
     </ListItemMobileGrid.Container>

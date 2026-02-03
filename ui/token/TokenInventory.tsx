@@ -18,7 +18,7 @@ import ResetIconButton from 'ui/shared/ResetIconButton';
 import TokenInventoryItem from './TokenInventoryItem';
 
 type Props = {
-  inventoryQuery: QueryWithPagesResult<'token_inventory'>;
+  inventoryQuery: QueryWithPagesResult<'general:token_inventory'>;
   tokenQuery: UseQueryResult<TokenInfo, ResourceError<unknown>>;
   ownerFilter?: string;
   shouldRender?: boolean;
@@ -90,9 +90,9 @@ const TokenInventory = ({ inventoryQuery, tokenQuery, ownerFilter, shouldRender 
       isError={ inventoryQuery.isError }
       itemsNum={ items?.length }
       emptyText="There are no tokens."
-      filterProps={{
-        hasActiveFilters: Boolean(ownerFilter),
-        emptyFilteredText: 'No tokens found for the selected owner.',
+      hasActiveFilters={ Boolean(ownerFilter) }
+      emptyStateProps={{
+        description: 'No tokens found for the selected owner.',
       }}
       actionBar={ actionBar }
     >

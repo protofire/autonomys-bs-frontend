@@ -3,7 +3,6 @@ import React from 'react';
 
 import type { TabItemRegular } from 'toolkit/components/AdaptiveTabs/types';
 
-import { useAppContext } from 'lib/contexts/app';
 import throwOnAbsentParamError from 'lib/errors/throwOnAbsentParamError';
 import throwOnResourceLoadError from 'lib/errors/throwOnResourceLoadError';
 import useIsMobile from 'lib/hooks/useIsMobile';
@@ -31,7 +30,6 @@ const TABS_HEIGHT = 80;
 
 const OptimisticL2TxnBatch = () => {
   const router = useRouter();
-  const appProps = useAppContext();
   const number = getQueryParamString(router.query.number);
   const height = getQueryParamString(router.query.height);
   const commitment = getQueryParamString(router.query.commitment);
@@ -41,11 +39,11 @@ const OptimisticL2TxnBatch = () => {
   const batchQuery = useBatchQuery();
 
   const batchTxsQuery = useQueryWithPages({
-    resourceName: 'optimistic_l2_txn_batch_txs',
+    resourceName: 'general:optimistic_l2_txn_batch_txs',
     pathParams: { number: String(batchQuery.data?.number) },
     options: {
       enabled: Boolean(!batchQuery.isPlaceholderData && batchQuery.data?.number && tab === 'txs'),
-      placeholderData: generateListStub<'optimistic_l2_txn_batch_txs'>(TX, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:optimistic_l2_txn_batch_txs'>(TX, 50, { next_page_params: {
         block_number: 1338932,
         index: 1,
         items_count: 50,
@@ -54,11 +52,11 @@ const OptimisticL2TxnBatch = () => {
   });
 
   const batchBlocksQuery = useQueryWithPages({
-    resourceName: 'optimistic_l2_txn_batch_blocks',
+    resourceName: 'general:optimistic_l2_txn_batch_blocks',
     pathParams: { number: String(batchQuery.data?.number) },
     options: {
       enabled: Boolean(!batchQuery.isPlaceholderData && batchQuery.data?.number && tab === 'blocks'),
-      placeholderData: generateListStub<'optimistic_l2_txn_batch_blocks'>(BLOCK, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:optimistic_l2_txn_batch_blocks'>(BLOCK, 50, { next_page_params: {
         batch_number: 1338932,
         items_count: 50,
       } }),
@@ -92,25 +90,11 @@ const OptimisticL2TxnBatch = () => {
     },
   ].filter(Boolean)), [ batchQuery, batchTxsQuery, batchBlocksQuery, hasPagination ]);
 
-  const backLink = React.useMemo(() => {
-    const hasGoBackLink = appProps.referrer && appProps.referrer.endsWith('/batches');
-
-    if (!hasGoBackLink) {
-      return;
-    }
-
-    return {
-      label: 'Back to txn batches list',
-      url: appProps.referrer,
-    };
-  }, [ appProps.referrer ]);
-
   return (
     <>
       <TextAd mb={ 6 }/>
       <PageTitle
         title={ `Batch #${ batchQuery.data?.number }` }
-        backLink={ backLink }
         isLoading={ batchQuery.isPlaceholderData }
       />
       <RoutedTabs

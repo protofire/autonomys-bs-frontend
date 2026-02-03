@@ -3,20 +3,24 @@ import React from 'react';
 
 import config from 'configs/app';
 import useApiQuery from 'lib/api/useApiQuery';
+import { useMultichainContext } from 'lib/contexts/multichain';
 import { VERIFIED_CONTRACTS_COUNTERS, VERIFIED_CONTRACTS_COUNTERS_MICROSERVICE } from 'stubs/contract';
 import StatsWidget from 'ui/shared/stats/StatsWidget';
 
-const isStatsFeatureEnabled = config.features.stats.isEnabled;
-
 const VerifiedContractsCounters = () => {
-  const countersStatsQuery = useApiQuery('stats_contracts', {
+  const multichainContext = useMultichainContext();
+
+  const chainConfig = multichainContext?.chain.app_config || config;
+  const isStatsFeatureEnabled = chainConfig.features.stats.isEnabled;
+
+  const countersStatsQuery = useApiQuery('stats:pages_contracts', {
     queryOptions: {
       enabled: isStatsFeatureEnabled,
       placeholderData: isStatsFeatureEnabled ? VERIFIED_CONTRACTS_COUNTERS_MICROSERVICE : undefined,
     },
   });
 
-  const countersApiQuery = useApiQuery('verified_contracts_counters', {
+  const countersApiQuery = useApiQuery('general:verified_contracts_counters', {
     queryOptions: {
       enabled: !isStatsFeatureEnabled,
       placeholderData: !isStatsFeatureEnabled ? VERIFIED_CONTRACTS_COUNTERS : undefined,
@@ -56,7 +60,14 @@ const VerifiedContractsCounters = () => {
         diff={ newVerifiedContractsCount }
         diffFormatted={ Number(newVerifiedContractsCount).toLocaleString() }
         isLoading={ isLoading }
-        href={ config.features.stats.isEnabled ? { pathname: '/stats/[id]', query: { id: 'verifiedContractsGrowth' } } : undefined }
+        href={
+          chainConfig.features.stats.isEnabled ?
+            {
+              pathname: '/stats/[id]',
+              query: { id: 'verifiedContractsGrowth', ...(multichainContext?.chain.id ? { chain_id: multichainContext.chain.id } : {}) },
+            } :
+            undefined
+        }
       />
     </Box>
   );

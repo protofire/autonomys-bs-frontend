@@ -11,13 +11,13 @@ import { TableCell, TableRow } from 'toolkit/chakra/table';
 import BatchEntityL2 from 'ui/shared/entities/block/BatchEntityL2';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import ZkEvmL2TxnBatchStatus from 'ui/shared/statusTag/ZkEvmL2TxnBatchStatus';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 
 const rollupFeature = config.features.rollup;
 
 type Props = { item: ZkEvmL2TxnBatchesItem; isLoading?: boolean };
 
-const TxnBatchesTableItem = ({ item, isLoading }: Props) => {
+const ZkEvmTxnBatchesTableItem = ({ item, isLoading }: Props) => {
   if (!rollupFeature.isEnabled || rollupFeature.type !== 'zkEvm') {
     return null;
   }
@@ -37,7 +37,7 @@ const TxnBatchesTableItem = ({ item, isLoading }: Props) => {
         <ZkEvmL2TxnBatchStatus status={ item.status } isLoading={ isLoading }/>
       </TableCell>
       <TableCell verticalAlign="middle">
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.timestamp }
           fallbackText="Undefined"
           isLoading={ isLoading }
@@ -62,6 +62,7 @@ const TxnBatchesTableItem = ({ item, isLoading }: Props) => {
             textStyle="sm"
             truncation="constant_long"
             noIcon
+            noCopy
           />
         ) : <Text>Pending</Text> }
       </TableCell>
@@ -73,6 +74,7 @@ const TxnBatchesTableItem = ({ item, isLoading }: Props) => {
             textStyle="sm"
             truncation="constant_long"
             noIcon
+            noCopy
           />
         ) : <Text>Pending</Text> }
       </TableCell>
@@ -80,4 +82,4 @@ const TxnBatchesTableItem = ({ item, isLoading }: Props) => {
   );
 };
 
-export default TxnBatchesTableItem;
+export default ZkEvmTxnBatchesTableItem;

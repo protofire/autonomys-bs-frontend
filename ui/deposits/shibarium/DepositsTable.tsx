@@ -3,14 +3,15 @@ import React from 'react';
 import type { ShibariumDepositsItem } from 'types/api/shibarium';
 
 import { TableBody, TableColumnHeader, TableHeaderSticky, TableRoot, TableRow } from 'toolkit/chakra/table';
+import TimeFormatToggle from 'ui/shared/time/TimeFormatToggle';
 
 import DepositsTableItem from './DepositsTableItem';
 
- type Props = {
-   items: Array<ShibariumDepositsItem>;
-   top: number;
-   isLoading?: boolean;
- };
+type Props = {
+  items: Array<ShibariumDepositsItem>;
+  top: number;
+  isLoading?: boolean;
+};
 
 const DepositsTable = ({ items, top, isLoading }: Props) => {
   return (
@@ -21,7 +22,10 @@ const DepositsTable = ({ items, top, isLoading }: Props) => {
           <TableColumnHeader>L1 txn hash</TableColumnHeader>
           <TableColumnHeader>L2 txn hash</TableColumnHeader>
           <TableColumnHeader>User</TableColumnHeader>
-          <TableColumnHeader>Age</TableColumnHeader>
+          <TableColumnHeader>
+            Timestamp
+            <TimeFormatToggle/>
+          </TableColumnHeader>
         </TableRow>
       </TableHeaderSticky>
       <TableBody>

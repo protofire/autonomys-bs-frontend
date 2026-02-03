@@ -4,24 +4,22 @@ import React from 'react';
 import type { ScrollL2MessageItem } from 'types/api/scrollL2';
 
 import config from 'configs/app';
-import getCurrencyValue from 'lib/getCurrencyValue';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import { TableCell, TableRow } from 'toolkit/chakra/table';
 import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
+import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 
 const rollupFeature = config.features.rollup;
 
- type Props = { item: ScrollL2MessageItem; isLoading?: boolean };
+type Props = { item: ScrollL2MessageItem; isLoading?: boolean };
 
 const ScrollL2DepositsTableItem = ({ item, isLoading }: Props) => {
   if (!rollupFeature.isEnabled || rollupFeature.type !== 'scroll') {
     return null;
   }
-
-  const { valueStr } = getCurrencyValue({ value: item.value, decimals: String(config.chain.currency.decimals) });
 
   return (
     <TableRow>
@@ -44,10 +42,11 @@ const ScrollL2DepositsTableItem = ({ item, isLoading }: Props) => {
           hash={ item.origination_transaction_hash }
           truncation="constant_long"
           noIcon
+          noCopy
         />
       </TableCell>
       <TableCell verticalAlign="middle" pr={ 12 }>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.origination_timestamp }
           isLoading={ isLoading }
           color="text.secondary"
@@ -68,9 +67,11 @@ const ScrollL2DepositsTableItem = ({ item, isLoading }: Props) => {
         ) }
       </TableCell>
       <TableCell verticalAlign="middle" isNumeric>
-        <Skeleton loading={ isLoading } display="inline-block">
-          <span>{ valueStr }</span>
-        </Skeleton>
+        <NativeCoinValue
+          amount={ item.value }
+          noSymbol
+          loading={ isLoading }
+        />
       </TableCell>
     </TableRow>
   );

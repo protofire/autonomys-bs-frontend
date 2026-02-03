@@ -54,7 +54,7 @@ const WatchListItem = ({ item, isLoading, onEditClick, onDeleteClick, hasEmail }
       setSwitchDisabled(true);
       const body = { ...item, notification_methods: { email: !notificationEnabled } };
       setNotificationEnabled(prevState => !prevState);
-      return apiFetch('watchlist', {
+      return apiFetch('general:watchlist', {
         pathParams: { id: String(item.id) },
         fetchParams: { method: 'PUT', body },
       }) as Promise<WatchlistAddress>;
@@ -88,7 +88,6 @@ const WatchListItem = ({ item, isLoading, onEditClick, onDeleteClick, hasEmail }
           <Text textStyle="sm" fontWeight={ 500 }>Email notification</Text>
           <Skeleton loading={ isLoading } display="inline-block">
             <Switch
-              size="md"
               checked={ notificationEnabled }
               onCheckedChange={ onSwitch }
               aria-label="Email notification"

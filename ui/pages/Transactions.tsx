@@ -5,17 +5,14 @@ import React from 'react';
 
 import type { TabItemRegular } from 'toolkit/components/AdaptiveTabs/types';
 
-import { route } from 'nextjs-routes';
-
 import config from 'configs/app';
 import useIsMobile from 'lib/hooks/useIsMobile';
 import getNetworkValidationActionText from 'lib/networks/getNetworkValidationActionText';
 import getQueryParamString from 'lib/router/getQueryParamString';
 import { TX } from 'stubs/tx';
 import { generateListStub } from 'stubs/utils';
-import { Link } from 'toolkit/chakra/link';
 import RoutedTabs from 'toolkit/components/RoutedTabs/RoutedTabs';
-import IconSvg from 'ui/shared/IconSvg';
+import AdvancedFilterLink from 'ui/shared/links/AdvancedFilterLink';
 import PageTitle from 'ui/shared/Page/PageTitle';
 import Pagination from 'ui/shared/pagination/Pagination';
 import useQueryWithPages from 'ui/shared/pagination/useQueryWithPages';
@@ -39,11 +36,11 @@ const Transactions = () => {
   const tab = getQueryParamString(router.query.tab);
 
   const txsValidatedQuery = useQueryWithPages({
-    resourceName: 'txs_validated',
+    resourceName: 'general:txs_validated',
     filters: { filter: 'validated' },
     options: {
       enabled: !tab || tab === 'validated',
-      placeholderData: generateListStub<'txs_validated'>(TX, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:txs_validated'>(TX, 50, { next_page_params: {
         block_number: 9005713,
         index: 5,
         items_count: 50,
@@ -53,11 +50,11 @@ const Transactions = () => {
   });
 
   const txsPendingQuery = useQueryWithPages({
-    resourceName: 'txs_pending',
+    resourceName: 'general:txs_pending',
     filters: { filter: 'pending' },
     options: {
       enabled: tab === 'pending',
-      placeholderData: generateListStub<'txs_pending'>(TX, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:txs_pending'>(TX, 50, { next_page_params: {
         inserted_at: '2024-02-05T07:04:47.749818Z',
         hash: '0x00',
         filter: 'pending',
@@ -66,11 +63,11 @@ const Transactions = () => {
   });
 
   const txsWithBlobsQuery = useQueryWithPages({
-    resourceName: 'txs_with_blobs',
+    resourceName: 'general:txs_with_blobs',
     filters: { type: 'blob_transaction' },
     options: {
       enabled: config.features.dataAvailability.isEnabled && tab === 'blob_txs',
-      placeholderData: generateListStub<'txs_with_blobs'>(TX, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:txs_with_blobs'>(TX, 50, { next_page_params: {
         block_number: 10602877,
         index: 8,
         items_count: 50,
@@ -79,10 +76,10 @@ const Transactions = () => {
   });
 
   const txsWatchlistQuery = useQueryWithPages({
-    resourceName: 'txs_watchlist',
+    resourceName: 'general:txs_watchlist',
     options: {
       enabled: tab === 'watchlist',
-      placeholderData: generateListStub<'txs_watchlist'>(TX, 50, { next_page_params: {
+      placeholderData: generateListStub<'general:txs_watchlist'>(TX, 50, { next_page_params: {
         block_number: 9005713,
         index: 5,
         items_count: 50,
@@ -153,17 +150,7 @@ const Transactions = () => {
 
     return (
       <Flex alignItems="center" gap={ 6 }>
-        { isAdvancedFilterEnabled && (
-          <Link
-            href={ route({ pathname: '/advanced-filter' }) }
-            alignItems="center"
-            display="flex"
-            gap={ 1 }
-          >
-            <IconSvg name="filter" boxSize={ 5 }/>
-            Advanced filter
-          </Link>
-        ) }
+        { isAdvancedFilterEnabled && <AdvancedFilterLink/> }
         { pagination.isVisible && <Pagination my={ 1 } { ...pagination }/> }
       </Flex>
     );

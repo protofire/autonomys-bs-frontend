@@ -8,7 +8,7 @@ export interface Props {
   isLoading?: boolean;
 }
 
-const ZkEvmL2TxnBatchStatus = ({ status, isLoading }: Props) => {
+const ScrollL2TxnBatchStatus = ({ status, isLoading }: Props) => {
   let type: StatusTagType;
 
   switch (status) {
@@ -20,7 +20,7 @@ const ZkEvmL2TxnBatchStatus = ({ status, isLoading }: Props) => {
       break;
   }
 
-  return <StatusTag type={ type } text={ status } isLoading={ isLoading }/>;
+  return <StatusTag type={ type } text={ status } loading={ isLoading }/>;
 };
 
-export default ZkEvmL2TxnBatchStatus;
+export default ScrollL2TxnBatchStatus;

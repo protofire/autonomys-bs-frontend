@@ -15,10 +15,7 @@ import { FormFieldAddress } from 'toolkit/components/forms/fields/FormFieldAddre
 import { FormFieldCheckbox } from 'toolkit/components/forms/fields/FormFieldCheckbox';
 import { FormFieldText } from 'toolkit/components/forms/fields/FormFieldText';
 
-import AddressFormNotifications from './AddressFormNotifications';
-
-// does it depend on the network?
-const NOTIFICATIONS = [ 'native', 'ERC-20', 'ERC-721', 'ERC-404' ] as const;
+import AddressFormNotifications, { NOTIFICATIONS } from './AddressFormNotifications';
 
 const TAG_MAX_LENGTH = 35;
 
@@ -36,19 +33,7 @@ export type Inputs = {
   tag: string;
   notification: boolean;
   notification_settings: {
-    'native': {
-      outcoming: boolean;
-      incoming: boolean;
-    };
-    'ERC-721': {
-      outcoming: boolean;
-      incoming: boolean;
-    };
-    'ERC-20': {
-      outcoming: boolean;
-      incoming: boolean;
-    };
-    'ERC-404': {
+    [key: string]: {
       outcoming: boolean;
       incoming: boolean;
     };
@@ -60,7 +45,9 @@ const AddressForm: React.FC<Props> = ({ data, onSuccess, setAlertVisible, isAdd,
 
   let notificationsDefault = {} as Inputs['notification_settings'];
   if (!data?.notification_settings) {
-    NOTIFICATIONS.forEach(n => notificationsDefault[n] = { incoming: hasEmail, outcoming: hasEmail });
+    NOTIFICATIONS.forEach((notificationType) => {
+      notificationsDefault[notificationType] = { incoming: hasEmail, outcoming: hasEmail };
+    });
   } else {
     notificationsDefault = data.notification_settings;
   }
@@ -88,14 +75,14 @@ const AddressForm: React.FC<Props> = ({ data, onSuccess, setAlertVisible, isAdd,
     };
     if (!isAdd && data) {
       // edit address
-      return apiFetch('watchlist', {
+      return apiFetch('general:watchlist', {
         pathParams: { id: data?.id ? String(data.id) : '' },
         fetchParams: { method: 'PUT', body },
       });
 
     } else {
       // add address
-      return apiFetch('watchlist', { fetchParams: { method: 'POST', body } });
+      return apiFetch('general:watchlist', { fetchParams: { method: 'POST', body } });
     }
   }
 

@@ -13,7 +13,7 @@ import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
 import ListItemMobileGrid from 'ui/shared/ListItemMobile/ListItemMobileGrid';
 import ArbitrumL2TxnBatchStatus from 'ui/shared/statusTag/ArbitrumL2TxnBatchStatus';
-import TimeAgoWithTooltip from 'ui/shared/TimeAgoWithTooltip';
+import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 
 const rollupFeature = config.features.rollup;
 
@@ -64,12 +64,13 @@ const ArbitrumL2TxnBatchesListItem = ({ item, isLoading }: Props) => {
           hash={ item.commitment_transaction.hash }
           isLoading={ isLoading }
           truncation="constant_long"
+          noCopy
         />
       </ListItemMobileGrid.Value>
 
       <ListItemMobileGrid.Label isLoading={ isLoading }>Age</ListItemMobileGrid.Label>
       <ListItemMobileGrid.Value>
-        <TimeAgoWithTooltip
+        <TimeWithTooltip
           timestamp={ item.commitment_transaction.timestamp }
           fallbackText="Undefined"
           isLoading={ isLoading }

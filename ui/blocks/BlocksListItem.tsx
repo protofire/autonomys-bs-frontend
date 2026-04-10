@@ -24,6 +24,7 @@ import TimeWithTooltip from 'ui/shared/time/TimeWithTooltip';
 import Utilization from 'ui/shared/Utilization/Utilization';
 import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 import SimpleValue from 'ui/shared/value/SimpleValue';
+import { WEI } from 'ui/shared/value/utils';
 
 interface Props {
   data: Block;
@@ -37,7 +38,6 @@ const isRollup = config.features.rollup.isEnabled;
 
 const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chainData }: Props) => {
   const totalReward = getBlockTotalReward(data);
-  const burntFees = BigNumber(data.burnt_fees || 0);
   const txFees = BigNumber(data.transaction_fees || 0);
 
   return (
@@ -119,17 +119,16 @@ const BlocksListItem = ({ data, isLoading, enableTimeIncrement, animation, chain
       ) }
       { !isRollup && !config.UI.views.block.hiddenFields?.burnt_fees && (
         <Box>
-          <Text fontWeight={ 500 }>Burnt fees</Text>
+          <Text fontWeight={ 500 }>Txn fees</Text>
           <Flex columnGap={ 4 } mt={ 2 }>
             <NativeCoinValue
-              amount={ data.burnt_fees }
+              amount={ txFees.div(WEI).toFixed(8) }
               noSymbol
-              startElement={ <IconSvg name="flame" mr={ 2 } boxSize={ 5 } color={{ _light: 'gray.500', _dark: 'inherit' }} isLoading={ isLoading }/> }
               loading={ isLoading }
               display="flex"
               color="text.secondary"
             />
-            <Utilization value={ burntFees.div(txFees).toNumber() } isLoading={ isLoading }/>
+            <Utilization value={ txFees.div(WEI).toNumber() } isLoading={ isLoading }/>
           </Flex>
         </Box>
       ) }

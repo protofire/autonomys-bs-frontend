@@ -34,7 +34,6 @@ import { Tooltip } from 'toolkit/chakra/tooltip';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
 import DetailedInfoNativeCoinValue from 'ui/shared/DetailedInfo/DetailedInfoNativeCoinValue';
-import DetailedInfoSponsoredItem from 'ui/shared/DetailedInfo/DetailedInfoSponsoredItem';
 import DetailedInfoTimestamp from 'ui/shared/DetailedInfo/DetailedInfoTimestamp';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import AddressEntityInterop from 'ui/shared/entities/address/AddressEntityInterop';
@@ -53,7 +52,6 @@ import GasPriceValue from 'ui/shared/value/GasPriceValue';
 import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 import VerificationSteps from 'ui/shared/verificationSteps/VerificationSteps';
 import TxDetailsActions from 'ui/tx/details/txDetailsActions/TxDetailsActions';
-import TxDetailsBurntFees from 'ui/tx/details/TxDetailsBurntFees';
 import TxDetailsFeePerGas from 'ui/tx/details/TxDetailsFeePerGas';
 import TxDetailsGasPrice from 'ui/tx/details/TxDetailsGasPrice';
 import TxDetailsOther from 'ui/tx/details/TxDetailsOther';
@@ -441,8 +439,6 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus, noTxActions }: P
         <TxAllowedPeekers items={ data.allowed_peekers }/>
       ) }
 
-      <DetailedInfoSponsoredItem isLoading={ isLoading }/>
-
       <DetailedInfo.ItemDivider/>
 
       { !noTxActions && <TxDetailsActions hash={ data.hash } actions={ data.actions } isTxDataLoading={ isLoading }/> }
@@ -791,8 +787,6 @@ const TxInfo = ({ data, tacOperations, isLoading, socketStatus, noTxActions }: P
           </DetailedInfo.ItemValue>
         </>
       ) }
-
-      <TxDetailsBurntFees data={ data } isLoading={ isLoading }/>
 
       { rollupFeature.isEnabled && rollupFeature.type === 'optimistic' && (
         <>

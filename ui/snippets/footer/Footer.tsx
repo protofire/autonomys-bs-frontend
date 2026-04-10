@@ -40,8 +40,14 @@ const Footer = () => {
     {
       icon: 'social/git' as const,
       iconSize: '20px',
+      text: 'Submit an issue',
+      url: 'https://github.com/autonomys/blockscout-frontend/issues',
+    },
+    {
+      icon: 'social/git' as const,
+      iconSize: '20px',
       text: 'Contribute',
-      url: 'https://github.com/blockscout/blockscout',
+      url: 'https://github.com/autonomys',
     },
     {
       icon: 'brands/pro_api' as const,
@@ -64,20 +70,14 @@ const Footer = () => {
     {
       icon: 'social/twitter' as const,
       iconSize: '24px',
-      text: 'X',
-      url: 'https://x.com/blockscout',
+      text: 'X (ex-Twitter)',
+      url: 'https://twitter.com/AutonomysNet',
     },
     {
       icon: 'social/discord' as const,
       iconSize: '24px',
       text: 'Discord',
-      url: 'https://discord.gg/blockscout',
-    },
-    {
-      icon: 'brands/blockscout' as const,
-      iconSize: '20px',
-      text: 'All chains',
-      url: 'https://chains.blockscout.com',
+      url: 'https://autonomys.xyz/discord',
     },
   ].filter(Boolean);
 
@@ -138,9 +138,6 @@ const Footer = () => {
             />
           </Link>
         </Flex>
-        <Text mt={ 3 } fontSize="xs">
-          Blockscout is a tool for inspecting and analyzing EVM based blockchains. Blockchain explorer for Ethereum Networks.
-        </Text>
         <Box mt={ 6 } alignItems="start" textStyle="xs">
           { apiVersionUrl && (
             <Text>

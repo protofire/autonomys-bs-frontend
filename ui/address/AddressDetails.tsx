@@ -13,14 +13,11 @@ import isCustomAppError from 'ui/shared/AppError/isCustomAppError';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import DataFetchAlert from 'ui/shared/DataFetchAlert';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
-import DetailedInfoSponsoredItem from 'ui/shared/DetailedInfo/DetailedInfoSponsoredItem';
 import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import ContractCreationStatus from 'ui/shared/statusTag/ContractCreationStatus';
 
-import Address3rdPartyWidgets from './Address3rdPartyWidgets';
-import useAddress3rdPartyWidgets from './address3rdPartyWidgets/useAddress3rdPartyWidgets';
 import AddressAlternativeFormat from './details/AddressAlternativeFormat';
 import AddressBalance from './details/AddressBalance';
 import AddressCeloAccount from './details/AddressCeloAccount';
@@ -42,9 +39,6 @@ const AddressDetails = ({ addressQuery, countersQuery, isLoading }: Props) => {
   const router = useRouter();
 
   const addressHash = getQueryParamString(router.query.hash);
-
-  const addressType = addressQuery.data?.is_contract && addressQuery.data?.proxy_type !== 'eip7702' ? 'contract' : 'eoa';
-  const address3rdPartyWidgets = useAddress3rdPartyWidgets(addressType, addressQuery.isPlaceholderData);
 
   const error404Data = React.useMemo(() => ({
     hash: addressHash || '',
@@ -306,24 +300,6 @@ const AddressDetails = ({ addressQuery, countersQuery, isLoading }: Props) => {
           </>
         ) }
 
-        <DetailedInfoSponsoredItem isLoading={ isLoading }/>
-
-        { (address3rdPartyWidgets.isEnabled && address3rdPartyWidgets.items.length > 0) && (
-          <>
-            <DetailedInfo.ItemLabel
-              hint="Metrics provided by third party partners"
-              isLoading={ address3rdPartyWidgets.configQuery.isPlaceholderData || addressQuery.isPlaceholderData }
-            >
-              Widgets
-            </DetailedInfo.ItemLabel>
-            <DetailedInfo.ItemValue>
-              <Address3rdPartyWidgets
-                addressType={ addressType }
-                isLoading={ addressQuery.isPlaceholderData }
-              />
-            </DetailedInfo.ItemValue>
-          </>
-        ) }
       </DetailedInfo.Container>
     </>
   );

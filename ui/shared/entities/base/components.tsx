@@ -217,6 +217,10 @@ const Content = chakra(({
 }: ContentBaseProps) => {
   const styles = getContentProps(variant);
 
+  if (!text || text.length === 0) {
+    return <chakra.span className={ className } { ...styles }/>;
+  }
+
   if (truncation === 'tail') {
     return (
       <TruncatedText

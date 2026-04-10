@@ -44,6 +44,22 @@ const LogTopic = ({ hex, index, isLoading }: Props) => {
 
   const value = VALUE_CONVERTERS[selectedDataType.toLowerCase() as Lowercase<DataType>](hex);
 
+  if (!value) {
+    return (
+      <Flex alignItems="center" px={{ base: 0, lg: 3 }} _notFirst={{ mt: 3 }} overflow="hidden" maxW="100%">
+        <LogIndex
+          isLoading={ isLoading }
+          textStyle="xs"
+          mr={ 3 }
+          minW={ 6 }
+          height={ 6 }
+        >
+          { index }
+        </LogIndex>
+      </Flex>
+    );
+  }
+
   const content = (() => {
     switch (selectedDataType) {
       case 'hex':

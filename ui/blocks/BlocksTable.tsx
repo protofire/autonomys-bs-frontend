@@ -66,7 +66,7 @@ const BlocksTable = ({ data, isLoading, top, page, showSocketInfo, socketInfoNum
             { !isRollup && !config.UI.views.block.hiddenFields?.total_reward &&
               <TableColumnHeader width={ `${ REWARD_COL_WEIGHT / widthBase * 100 }%` }>Reward { currencyUnits.ether }</TableColumnHeader> }
             { !isRollup && !config.UI.views.block.hiddenFields?.burnt_fees &&
-              <TableColumnHeader width={ `${ FEES_COL_WEIGHT / widthBase * 100 }%` }>Burnt fees { currencyUnits.ether }</TableColumnHeader> }
+              <TableColumnHeader width={ `${ FEES_COL_WEIGHT / widthBase * 100 }%` }>Txs fees { currencyUnits.ether }</TableColumnHeader> }
             { !isRollup && !config.UI.views.block.hiddenFields?.base_fee &&
               <TableColumnHeader width="150px" isNumeric>Base fee</TableColumnHeader> }
           </TableRow>

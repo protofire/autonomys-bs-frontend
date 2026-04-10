@@ -26,7 +26,7 @@ import BlockGasUsed from 'ui/shared/block/BlockGasUsed';
 import CopyToClipboard from 'ui/shared/CopyToClipboard';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
 import DetailedInfoTimestamp from 'ui/shared/DetailedInfo/DetailedInfoTimestamp';
-import AddressEntity from 'ui/shared/entities/address/AddressEntity';
+// import AddressEntity from 'ui/shared/entities/address/AddressEntity';
 import BatchEntityL2 from 'ui/shared/entities/block/BatchEntityL2';
 import BlockEntityL1 from 'ui/shared/entities/block/BlockEntityL1';
 import TxEntityL1 from 'ui/shared/entities/tx/TxEntityL1';
@@ -100,14 +100,6 @@ const BlockDetails = ({ query }: Props) => {
             { space }+{ space }
             <Tooltip content="Txn fees">
               <span>{ txFees.dividedBy(WEI).toFixed() }</span>
-            </Tooltip>
-          </>
-        ) }
-        { !burntFees.isEqualTo(ZERO) && (
-          <>
-            { space }-{ space }
-            <Tooltip content="Burnt fees">
-              <span>{ burntFees.dividedBy(WEI).toFixed() }</span>
             </Tooltip>
           </>
         ) }
@@ -327,7 +319,7 @@ const BlockDetails = ({ query }: Props) => {
         </>
       ) }
 
-      { !config.UI.views.block.hiddenFields?.miner && (
+      { /* !config.UI.views.block.hiddenFields?.miner && (
         <>
           <DetailedInfo.ItemLabel
             hint="A block producer who successfully included the block onto the blockchain"
@@ -342,7 +334,7 @@ const BlockDetails = ({ query }: Props) => {
             />
           </DetailedInfo.ItemValue>
         </>
-      ) }
+      ) */ }
 
       { rollupFeature.isEnabled && rollupFeature.type === 'arbitrum' &&
         (data.arbitrum?.commitment_transaction.hash || data.arbitrum?.confirmation_transaction.hash) &&
@@ -496,20 +488,20 @@ const BlockDetails = ({ query }: Props) => {
         </>
       ) }
 
-      { !config.UI.views.block.hiddenFields?.burnt_fees && !burntFees.isEqualTo(ZERO) && (
+      { !config.UI.views.block.hiddenFields?.burnt_fees && (
         <>
           <DetailedInfo.ItemLabel
             hint={
-              `Amount of ${ config.chain.currency.symbol || 'native token' } burned from transactions included in the block. 
+              `Amount of ${ config.chain.currency.symbol || 'native token' } burned from transactions included in the block.
               Equals Block Base Fee per Gas * Gas Used`
             }
             isLoading={ isPlaceholderData }
           >
-            Burnt fees
+            Txn fees
           </DetailedInfo.ItemLabel>
           <DetailedInfo.ItemValue multiRow>
             <NativeCoinValue
-              amount={ burntFees.toString() }
+              amount={ txFees.dividedBy(WEI).toFixed() }
               accuracy={ 0 }
               loading={ isPlaceholderData }
               startElement={ <IconSvg name="flame" boxSize={ 5 } mr={{ base: 1, lg: 2 }} color="icon.primary" isLoading={ isPlaceholderData }/> }
@@ -518,7 +510,7 @@ const BlockDetails = ({ query }: Props) => {
             { !txFees.isEqualTo(ZERO) && (
               <Tooltip content="Burnt fees / Txn fees * 100%">
                 <Utilization
-                  value={ burntFees.dividedBy(txFees).toNumber() }
+                  value={ txFees.dividedBy(WEI).toNumber() }
                   isLoading={ isPlaceholderData }
                 />
               </Tooltip>
@@ -624,21 +616,7 @@ const BlockDetails = ({ query }: Props) => {
           </>
         ) }
 
-        { data.difficulty && (
-          <>
-            <DetailedInfo.ItemLabel
-              hint={ `Block difficulty for ${ validatorTitle }, used to calibrate block generation time` }
-            >
-              Difficulty
-            </DetailedInfo.ItemLabel>
-            <DetailedInfo.ItemValue>
-              <Box overflow="hidden">
-                <HashStringShortenDynamic hash={ BigNumber(data.difficulty).toFormat() }/>
-              </Box>
-            </DetailedInfo.ItemValue>
-          </>
-        ) }
-        { data.total_difficulty && (
+        { /* { data.total_difficulty && (
           <>
             <DetailedInfo.ItemLabel
               hint="Total difficulty of the chain until this block"
@@ -651,7 +629,7 @@ const BlockDetails = ({ query }: Props) => {
               </Box>
             </DetailedInfo.ItemValue>
           </>
-        ) }
+        ) } */ }
 
         <DetailedInfo.ItemDivider/>
 

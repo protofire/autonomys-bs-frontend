@@ -4,14 +4,8 @@ import React from 'react';
 
 import type { Block } from 'types/api/block';
 
-import { currencyUnits } from 'lib/units';
-import { Tooltip } from 'toolkit/chakra/tooltip';
-import { ZERO } from 'toolkit/utils/consts';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
-import IconSvg from 'ui/shared/IconSvg';
-import Utilization from 'ui/shared/Utilization/Utilization';
 import GasPriceValue from 'ui/shared/value/GasPriceValue';
-import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
 
 interface Props {
   data: Block;
@@ -26,9 +20,6 @@ const BlockDetailsBlobInfo = ({ data }: Props) => {
   ) {
     return null;
   }
-
-  const burntBlobFees = BigNumber(data.burnt_blob_fees || 0);
-  const blobFees = BigNumber(data.blob_gas_price || 0).multipliedBy(BigNumber(data.blob_gas_used || 0));
 
   return (
     <>
@@ -55,28 +46,6 @@ const BlockDetailsBlobInfo = ({ data }: Props) => {
           </DetailedInfo.ItemLabel>
           <DetailedInfo.ItemValue>
             <Text>{ BigNumber(data.blob_gas_used).toFormat() }</Text>
-          </DetailedInfo.ItemValue>
-        </>
-      ) }
-      { !burntBlobFees.isEqualTo(ZERO) && (
-        <>
-          <DetailedInfo.ItemLabel
-            hint={ `Amount of ${ currencyUnits.ether } used for blobs in this block` }
-          >
-            Blob burnt fees
-          </DetailedInfo.ItemLabel>
-          <DetailedInfo.ItemValue multiRow>
-            <NativeCoinValue
-              amount={ burntBlobFees.toString() }
-              accuracy={ 0 }
-              startElement={ <IconSvg name="flame" boxSize={ 5 } color="icon.primary" mr={{ base: 1, lg: 2 }}/> }
-              mr={ 4 }
-            />
-            { !blobFees.isEqualTo(ZERO) && (
-              <Tooltip content="Blob burnt fees / Txn fees * 100%">
-                <Utilization value={ burntBlobFees.dividedBy(blobFees).toNumber() }/>
-              </Tooltip>
-            ) }
           </DetailedInfo.ItemValue>
         </>
       ) }

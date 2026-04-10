@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 
 import type { SocketMessage } from 'lib/socket/types';
@@ -8,6 +8,8 @@ import { getResourceKey } from 'lib/api/useApiQuery';
 import useSocketChannel from 'lib/socket/useSocketChannel';
 import useSocketMessage from 'lib/socket/useSocketMessage';
 import { currencyUnits } from 'lib/units';
+import { publicClient } from 'lib/web3/client';
+import { SECOND } from 'toolkit/utils/consts';
 import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
 import NativeTokenIcon from 'ui/shared/NativeTokenIcon';
 import NativeCoinValue from 'ui/shared/value/NativeCoinValue';
@@ -20,6 +22,23 @@ interface Props {
 const AddressBalance = ({ data, isLoading }: Props) => {
   const [ lastBlockNumber, setLastBlockNumber ] = React.useState<number>(data.block_number_balance_updated_at || 0);
   const queryClient = useQueryClient();
+
+  // Fetch balance directly from RPC
+  const rpcBalanceQuery = useQuery({
+    queryKey: [ 'RPC', 'eth_getBalance', { hash: data.hash } ],
+    queryFn: async() => {
+      if (!publicClient) {
+        return null;
+      }
+      const balance = await publicClient.getBalance({ address: data.hash as `0x${ string }` });
+      // getBalance returns bigint, convert to decimal string
+      return BigInt(balance).toString(10);
+    },
+    enabled: Boolean(data.hash) && Boolean(publicClient),
+    refetchInterval: 5 * SECOND,
+  });
+
+  const rpcBalance = rpcBalanceQuery.data;
 
   const updateData = React.useCallback((balance: string, exchangeRate: string, blockNumber: number) => {
     if (blockNumber < lastBlockNumber) {
@@ -51,7 +70,7 @@ const AddressBalance = ({ data, isLoading }: Props) => {
 
   const channel = useSocketChannel({
     topic: `addresses:${ data.hash.toLowerCase() }`,
-    isDisabled: !data.coin_balance,
+    isDisabled: !data.coin_balance && !rpcBalance,
   });
   useSocketMessage({
     channel,
@@ -64,20 +83,24 @@ const AddressBalance = ({ data, isLoading }: Props) => {
     handler: handleNewCoinBalanceMessage,
   });
 
+  // Use RPC balance if available, otherwise fall back to backend balance
+  const displayBalance = rpcBalance ?? data.coin_balance ?? '0';
+  const isBalanceLoading = isLoading || (rpcBalanceQuery.isLoading && !rpcBalance);
+
   return (
     <>
       <DetailedInfo.ItemLabel
         hint={ `${ currencyUnits.ether } balance` }
-        isLoading={ isLoading }
+        isLoading={ isBalanceLoading }
       >
         Balance
       </DetailedInfo.ItemLabel>
       <DetailedInfo.ItemValue multiRow>
         <NativeCoinValue
-          amount={ data.coin_balance || '0' }
+          amount={ displayBalance }
           exchangeRate={ data.exchange_rate }
-          startElement={ <NativeTokenIcon boxSize={ 5 } isLoading={ isLoading } mr={ 2 }/> }
-          loading={ isLoading }
+          startElement={ <NativeTokenIcon boxSize={ 5 } isLoading={ isBalanceLoading } mr={ 2 }/> }
+          loading={ isBalanceLoading }
         />
       </DetailedInfo.ItemValue>
     </>

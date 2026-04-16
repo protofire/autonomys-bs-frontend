@@ -7,8 +7,7 @@ import config from 'configs/app';
 import RewardsButton from 'ui/rewards/RewardsButton';
 import SearchBar from 'ui/snippets/searchBar/SearchBarDesktop';
 import SearchBarMobile from 'ui/snippets/searchBar/SearchBarMobile';
-import UserProfileDesktop from 'ui/snippets/user/profile/UserProfileDesktop';
-import UserWalletDesktop from 'ui/snippets/user/wallet/UserWalletDesktop';
+import UserProfileDesktop from 'ui/snippets/user/UserProfileDesktop';
 
 export const BACKGROUND_DEFAULT =
   'radial-gradient(103.03% 103.03% at 0% 0%, rgba(183, 148, 244, 0.8) 0%, rgba(0, 163, 196, 0.8) 100%), var(--chakra-colors-blue-400)';
@@ -74,10 +73,7 @@ const HeroBanner = () => {
           { config.UI.navigation.layout === 'vertical' && (
             <Box display={{ base: 'none', lg: 'flex' }} gap={ 2 }>
               { config.features.rewards.isEnabled && <RewardsButton variant="hero"/> }
-              {
-                (config.features.account.isEnabled && <UserProfileDesktop buttonVariant="hero"/>) ||
-                (config.features.blockchainInteraction.isEnabled && <UserWalletDesktop buttonVariant="hero"/>)
-              }
+              <UserProfileDesktop buttonVariant="hero"/>
             </Box>
           ) }
         </Flex>

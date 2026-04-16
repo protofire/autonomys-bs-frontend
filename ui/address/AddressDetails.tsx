@@ -18,15 +18,12 @@ import BlockEntity from 'ui/shared/entities/block/BlockEntity';
 import TxEntity from 'ui/shared/entities/tx/TxEntity';
 import ContractCreationStatus from 'ui/shared/statusTag/ContractCreationStatus';
 
-import Address3rdPartyWidgets from './Address3rdPartyWidgets';
-import useAddress3rdPartyWidgets from './address3rdPartyWidgets/useAddress3rdPartyWidgets';
 import AddressAlternativeFormat from './details/AddressAlternativeFormat';
 import AddressBalance from './details/AddressBalance';
 import AddressCeloAccount from './details/AddressCeloAccount';
 import AddressImplementations from './details/AddressImplementations';
 import AddressNameInfo from './details/AddressNameInfo';
 import AddressNetWorth from './details/AddressNetWorth';
-import AddressSaveOnGas from './details/AddressSaveOnGas';
 import FilecoinActorTag from './filecoin/FilecoinActorTag';
 import TokenSelect from './tokenSelect/TokenSelect';
 import type { AddressCountersQuery } from './utils/useAddressCountersQuery';
@@ -42,9 +39,6 @@ const AddressDetails = ({ addressQuery, countersQuery, isLoading }: Props) => {
   const router = useRouter();
 
   const addressHash = getQueryParamString(router.query.hash);
-
-  const addressType = addressQuery.data?.is_contract && addressQuery.data?.proxy_type !== 'eip7702' ? 'contract' : 'eoa';
-  const address3rdPartyWidgets = useAddress3rdPartyWidgets(addressType, addressQuery.isPlaceholderData);
 
   const error404Data = React.useMemo(() => ({
     hash: addressHash || '',
@@ -262,12 +256,6 @@ const AddressDetails = ({ addressQuery, countersQuery, isLoading }: Props) => {
                 />
               ) :
                 0 }
-              { !countersQuery.isPlaceholderData && countersQuery.data?.gas_usage_count && (
-                <AddressSaveOnGas
-                  gasUsed={ countersQuery.data.gas_usage_count }
-                  address={ data.hash }
-                />
-              ) }
             </DetailedInfo.ItemValue>
           </>
         ) }

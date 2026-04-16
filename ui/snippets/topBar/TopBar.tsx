@@ -9,7 +9,6 @@ import Settings from './settings/Settings';
 import TopBarStats from './TopBarStats';
 
 const TopBar = () => {
-
   return (
     // not ideal if scrollbar is visible, but better than having a horizontal scroll
     <Box bgColor={{ _light: 'theme.topbar.bg._light', _dark: 'theme.topbar.bg._dark' }} position="sticky" left={ 0 } width="100%" maxWidth="100vw">
@@ -22,8 +21,8 @@ const TopBar = () => {
         maxW={ `${ CONTENT_MAX_WIDTH }px` }
       >
         <HStack gap={ 0 } fontSize="xs">
-          { Boolean(config.UI.featuredNetworks.items) && <NetworkMenu/> }
-          { !config.features.opSuperchain.isEnabled ? <TopBarStats/> : <div/> }
+          { Boolean(config.UI.featuredNetworks.items || config.features.multichain.isEnabled) && <NetworkMenu/> }
+          { !config.features.multichain.isEnabled ? <TopBarStats/> : <div/> }
         </HStack>
         <HStack
           alignItems="center"

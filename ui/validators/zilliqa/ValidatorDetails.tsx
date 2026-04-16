@@ -63,7 +63,7 @@ const ValidatorDetails = ({ data, isLoading }: Props) => {
             </Flex>
           </DetailedInfo.ItemValue>
         </>
-      )}
+      ) }
 
       <DetailedInfo.ItemLabel
         hint="The address used for authenticating requests from this staker to the deposit contract"

@@ -12,13 +12,13 @@ import useFetch from 'lib/hooks/useFetch';
 import { Link } from 'toolkit/chakra/link';
 import { Skeleton } from 'toolkit/chakra/skeleton';
 import { copy } from 'toolkit/utils/htmlEntities';
+import IconSvg from 'ui/shared/IconSvg';
 import { CONTENT_MAX_WIDTH } from 'ui/shared/layout/utils';
 import NetworkAddToWallet from 'ui/shared/NetworkAddToWallet';
 
 import FooterLinkItem from './FooterLinkItem';
 import IntTxsIndexingStatus from './IntTxsIndexingStatus';
 import getApiVersionUrl from './utils/getApiVersionUrl';
-import IconSvg from 'ui/shared/IconSvg';
 
 const MAX_LINKS_COLUMNS = 4;
 
@@ -30,27 +30,28 @@ const Footer = () => {
   const { data: backendVersionData } = useApiQuery('general:config_backend_version', {
     queryOptions: {
       staleTime: Infinity,
-      enabled: !config.features.opSuperchain.isEnabled,
+      enabled: !config.features.multichain.isEnabled,
+      refetchOnMount: false,
     },
   });
   const apiVersionUrl = getApiVersionUrl(backendVersionData?.backend_version);
 
   const BLOCKSCOUT_LINKS = [
     {
-      icon: 'edit' as const,
-      iconSize: '16px',
+      icon: 'social/git' as const,
+      iconSize: '20px',
       text: 'Submit an issue',
       url: 'https://github.com/autonomys/blockscout-frontend/issues',
     },
     {
       icon: 'social/git' as const,
-      iconSize: '18px',
+      iconSize: '20px',
       text: 'Contribute',
       url: 'https://github.com/autonomys',
     },
     {
       icon: 'social/twitter' as const,
-      iconSize: '18px',
+      iconSize: '24px',
       text: 'X (ex-Twitter)',
       url: 'https://twitter.com/AutonomysNet',
     },
@@ -60,13 +61,7 @@ const Footer = () => {
       text: 'Discord',
       url: 'https://autonomys.xyz/discord',
     },
-    {
-      icon: 'donate' as const,
-      iconSize: '20px',
-      text: 'Donate',
-      url: 'https://eth.blockscout.com/address/0xfB4aF6A8592041E9BcE186E5aC4BDbd2B137aD11',
-    },
-  ];
+  ].filter(Boolean);
 
   const frontendLink = (() => {
     if (config.UI.footer.frontendVersion) {
@@ -105,7 +100,7 @@ const Footer = () => {
         _empty={{ display: 'none' }}
       >
         { !config.UI.indexingAlert.intTxs.isHidden && <IntTxsIndexingStatus/> }
-        { !config.features.opSuperchain.isEnabled && <NetworkAddToWallet source="Footer"/> }
+        { !config.features.multichain.isEnabled && <NetworkAddToWallet source="Footer"/> }
       </Flex>
     );
   }, []);

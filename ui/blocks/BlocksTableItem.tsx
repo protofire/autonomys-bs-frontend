@@ -85,7 +85,6 @@ const BlocksTableItem = ({ data, isLoading, enableTimeIncrement, animation, chai
             address={ data.miner }
             isLoading={ isLoading }
             truncation="constant"
-            maxW="min-content"
           />
         </TableCell>
       ) }
